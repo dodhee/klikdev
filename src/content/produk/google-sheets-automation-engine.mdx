@@ -2,7 +2,7 @@
 title: "Google Sheets Automation Engine"
 description: "Sistem otomasi Google Sheets yang menangani validasi data, notifikasi WhatsApp, dan sinkronisasi multi-sheet secara real-time."
 harga: 250000
-linkBeli: "https://wa.me/6281234567890?text=Halo%20mbah,%20saya%20mau%20beli%20Google%20Sheets%20Automation%20Engine"
+linkBeli: "https://wa.me/6281234796567?text=Halo%20mbah,%20saya%20mau%20beli%20Google%20Sheets%20Automation%20Engine"
 linkDfy: "https://godev.id/dfy/sheets-automation?utm_source=klikdev&utm_medium=bailout&utm_campaign=sheets-automation"
 stack: ["Google Apps Script", "Google Sheets API", "Clasp", "TypeScript"]
 waktuDeploy: "15-30 menit"
@@ -10,10 +10,11 @@ kategori: "Google Apps Script"
 thumbnail: "https://placehold.co/800x450/f97316/ffffff?text=Sheets+Automation"
 featured: true
 draft: false
-pubDatetime: 2026-01-15T00:00:00Z
+pubDatetime: 2025-01-15T00:00:00.000Z
 ---
 
-## Masalah & Solusi
+
+## Masalah dan Solusi 
 
 ### Masalah
 Anda punya Google Sheets yang diisi oleh banyak orang, tapi:
@@ -29,7 +30,8 @@ Script ini memberikan:
 - **Sinkronisasi Multi-Sheet**: Update otomatis ke sheet lain berdasarkan trigger
 - **Logging Aktivitas**: Semua perubahan tercatat dengan timestamp dan user
 
-## Cara Kerja
+
+## Cara Kerja 
 
 1. **Event-Driven Architecture**: Script berjalan otomatis saat ada `onEdit`, `onFormSubmit`, atau `onOpen`
 2. **Validasi Berlapis**: 
@@ -39,7 +41,8 @@ Script ini memberikan:
 3. **Notification Queue**: Notifikasi tidak langsung dikirim, tapi masuk queue untuk menghindari rate limit
 4. **Error Handling**: Setiap error tercatat di sheet log, tidak crash diam-diam
 
-## Tech Stack
+
+## Tech Stack 
 
 | Teknologi | Fungsi |
 |-----------|--------|
@@ -49,7 +52,8 @@ Script ini memberikan:
 | Google Sheets API | Akses data programmatic |
 | Fonnte API | WhatsApp notification (optional) |
 
-## Panduan Deploy
+
+## Panduan Deploy 
 
 ### Prasyarat
 - Akun Google (sudah punya Sheets)
@@ -104,7 +108,7 @@ Edit cell di Sheets, cek log & notifikasi
 - **Notifikasi tidak terkirim**: Cek API key dan webhook URL
 - **Data tidak tersinkron**: Cek permission Sheets (harus Editor, bukan Viewer)
 
-## FAQ
+## FAQ 
 
 ### Apakah bisa diintegrasikan dengan database eksternal?
 Ya, tapi perlu custom. Script ini by default hanya berinteraksi dengan Google Sheets. Jika butuh integrasi ke MySQL/PostgreSQL/Firebase, itu masuk kategori DFY (Done-For-You).
@@ -124,4 +128,3 @@ Ya, semua fungsi publik ada JSDoc-nya. Buka di Apps Script Editor untuk lihat in
 ---
 
 **Engineered by Dody (mbah)** — Bukan sekadar kode, tapi arsitektur yang bekerja.
-</content>

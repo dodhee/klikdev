@@ -1,0 +1,275 @@
+---
+import { getCollection, type CollectionEntry, render } from "astro:content";
+import ProductLayout from "@/layouts/ProductLayout.astro";
+import BailoutCTA from "@/components/BailoutCTA.astro";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import config from "@/config";
+
+export async function getStaticPaths() {
+  const produkCollection = await getCollection("produk");
+  return produkCollection
+    .filter(({ data }) => !data.draft)
+    .map(produk => ({
+      params: { slug: produk.id },
+      props: { produk },
+    }));
+}
+
+type Props = {
+  produk: CollectionEntry<"produk">;
+};
+
+const { produk } = Astro.props;
+const { data } = produk;
+const { Content } = await render(produk);
+
+const locale = Astro.currentLocale ?? config.site.lang;
+
+// Breadcrumb data
+const breadcrumbs = [
+  { label: "Home", url: getRelativeLocaleUrl(locale, "") },
+  { label: "Produk", url: getRelativeLocaleUrl(locale, "") + "#katalog" },
+  { label: produk.data.title, url: "" },
+];
+
+// Tab sections
+const tabs = [
+  { id: "masalah-solusi", label: "Masalah dan Solusi" },
+  { id: "cara-kerja", label: "Cara Kerja" },
+  { id: "tech-stack", label: "Tech Stack" },
+  { id: "panduan-deploy", label: "Panduan Deploy" },
+  { id: "faq", label: "FAQ" },
+];
+---
+
+<ProductLayout
+  title={data.title}
+  description={data.description}
+  ogImage={typeof data.thumbnail === "string" ? data.thumbnail : undefined}
+  breadcrumbs={breadcrumbs}
+>
+  <div class="app-layout py-8">
+    <!-- Hero Section -->
+    <section class="border-border border-b pb-8">
+    <!-- Breadcrumb -->
+    <nav aria-label="Breadcrumb" class="mb-6">
+      <ol class="flex flex-wrap items-center gap-2 text-sm">
+        {
+          breadcrumbs.map((crumb, index) => (
+            <li class="flex items-center gap-2">
+              {index > 0 && (
+                <span class="text-muted-foreground" aria-hidden="true">
+                  /
+                </span>
+              )}
+              {crumb.url ? (
+                <a
+                  href={crumb.url}
+                  class="text-muted-foreground hover:text-mbah-accent transition-colors"
+                >
+                  {crumb.label}
+                </a>
+              ) : (
+                <span class="text-foreground font-medium">{crumb.label}</span>
+              )}
+            </li>
+          ))
+        }
+      </ol>
+    </nav>
+
+    <!-- Title & Badge -->
+    <div class="mb-4">
+      <span
+        class="bg-mbah-accent/10 text-mbah-accent mb-3 inline-block rounded-full px-3 py-1 text-sm font-medium"
+      >
+        {data.kategori}
+      </span>
+      <h1 class="text-4xl leading-tight font-bold sm:text-5xl">
+        {data.title}
+      </h1>
+    </div>
+
+    <!-- Description -->
+    <p class="text-muted-foreground mb-6 text-lg">{data.description}</p>
+
+    <!-- Specs Grid -->
+    <div class="bg-card border-border mb-6 grid gap-4 rounded-lg border p-6 sm:grid-cols-3">
+      <!-- Stack -->
+      <div>
+        <p class="text-muted-foreground mb-2 text-sm">Tech Stack</p>
+        <div class="flex flex-wrap gap-1">
+          {
+            data.stack.slice(0, 3).map(tech => (
+              <span class="bg-muted font-signature text-foreground rounded px-2 py-1 text-xs">
+                {tech}
+              </span>
+            ))
+          }
+          {
+            data.stack.length > 3 && (
+              <span class="bg-muted font-signature text-muted-foreground rounded px-2 py-1 text-xs">
+                +{data.stack.length - 3}
+              </span>
+            )
+          }
+        </div>
+      </div>
+
+      <!-- Deploy Time -->
+      <div>
+        <p class="text-muted-foreground mb-2 text-sm">Waktu Deploy</p>
+        <p class="font-signature text-foreground text-lg font-semibold">
+          {data.waktuDeploy}
+        </p>
+      </div>
+
+      <!-- Price -->
+      <div>
+        <p class="text-muted-foreground mb-2 text-sm">Harga</p>
+        <p class="text-mbah-accent whitespace-nowrap text-2xl font-bold">
+          {
+            new Intl.NumberFormat("id-ID", {
+              style: "currency",
+              currency: "IDR",
+              minimumFractionDigits: 0,
+            })
+              .format(data.harga)
+              .replace("Rp", "Rp ")
+          }
+        </p>
+      </div>
+    </div>
+
+    <!-- CTA Buttons -->
+    <div class="mb-6 flex flex-wrap gap-4">
+      <a
+        href={data.linkBeli}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bg-mbah-accent hover:bg-mbah-accent-hover inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold text-white transition-colors"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="m3 21 1.65-3.8a9 9 0 1 1 3.4 2.9z"></path>
+          <path
+            d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"
+          ></path>
+        </svg>
+        Beli via WhatsApp
+      </a>
+      <BailoutCTA slug={produk.id} linkDfy={data.linkDfy} />
+    </div>
+  </section>
+
+  <!-- Tab Navigation -->
+  <section class="border-border sticky top-0 z-10 border-b bg-background/80 backdrop-blur-sm">
+    <nav class="app-layout overflow-x-auto">
+      <ul class="flex gap-1 py-2">
+        {
+          tabs.map((tab, index) => (
+            <li>
+              <a
+                href={`#${tab.id}`}
+                data-tab={tab.id}
+                class:list={[
+                  "hover:text-mbah-accent block whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                  { "bg-mbah-accent/10 text-mbah-accent": index === 0 },
+                ]}
+              >
+                {tab.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </section>
+
+  <!-- MDX Content -->
+  <article class="prose prose-lg max-w-none py-8">
+    <Content />
+  </article>
+
+  <!-- Bail-out Alert Box (Footer) -->
+  <section class="border-border border-t pt-8">
+    <div class="bg-mbah-accent/5 border-mbah-accent rounded-lg border-l-4 p-6">
+      <h3 class="text-foreground mb-2 text-xl font-semibold">
+        Butuh yang Skala Enterprise?
+      </h3>
+      <p class="text-muted-foreground mb-4">
+        Script ini murni untuk DIY. Jika butuh di-custom penuh, saya (Dody/mbah)
+        mengerjakannya secara Done-For-You.
+      </p>
+      <a
+        href={data.linkDfy}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:bg-mbah-accent-hover border-mbah-accent hover:border-mbah-accent-hover hover:text-mbah-accent-hover inline-flex items-center gap-2 rounded-lg border-2 px-6 py-3 font-semibold text-mbah-accent transition-colors"
+      >
+        Lihat Layanan DFY Saya →
+      </a>
+    </div>
+  </section>
+  </div>
+</ProductLayout>
+
+<script>
+  // Tab navigation with scroll spy
+  function initTabNavigation() {
+    const tabs = document.querySelectorAll("[data-tab]");
+    const sections = Array.from(tabs).map(tab =>
+      document.getElementById(tab.getAttribute("data-tab") || "")
+    );
+
+    // Update active tab on scroll
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            tabs.forEach(tab => {
+              const isActive = tab.getAttribute("data-tab") === id;
+              tab.classList.toggle("bg-mbah-accent/10", isActive);
+              tab.classList.toggle("text-mbah-accent", isActive);
+            });
+          }
+        });
+      },
+      { threshold: 0.5, rootMargin: "-100px 0px -50% 0px" }
+    );
+
+    sections.forEach(section => {
+      if (section) observer.observe(section);
+    });
+
+    // Smooth scroll on tab click
+    tabs.forEach(tab => {
+      tab.addEventListener("click", e => {
+        e.preventDefault();
+        const targetId = tab.getAttribute("data-tab");
+        const target = document.getElementById(targetId || "");
+        if (target) {
+          const offset = 100; // Account for sticky header
+          const top = target.offsetTop - offset;
+          window.scrollTo({ top, behavior: "smooth" });
+        }
+      });
+    });
+  }
+
+  initTabNavigation();
+  document.addEventListener("astro:after-swap", initTabNavigation);
+</script>
+---
+
+```

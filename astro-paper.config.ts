@@ -2,13 +2,13 @@ import { defineAstroPaperConfig } from "./src/types/config";
 
 export default defineAstroPaperConfig({
   site: {
-    url: "https://astro-paper.pages.dev/",
-    title: "AstroPaper",
-    description: "A minimal, responsive and SEO-friendly Astro blog theme.",
+    url: "https://klikdev.my.id/",
+    title: "KlikDev",
+    description: "Script siap pakai untuk otomasi bisnis dan development. Done-For-You services tersedia.",
     author: "dody [mbah]",
-    profile: "https://satna.ing",
+    profile: "https://godev.id",
     ogImage: "default-og.jpg",
-    lang: "en",
+    lang: "id",
     timezone: "Asia/Jakarta",
     dir: "ltr",
   },
