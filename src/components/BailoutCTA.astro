@@ -1,0 +1,54 @@
+---
+/**
+ * BailoutCTA - Tombol CTA untuk redirect ke layanan DFY di godev
+ * Auto-generate UTM parameters berdasarkan slug produk
+ */
+
+interface Props {
+  productSlug: string;
+  linkDfy: string;
+  variant?: "default" | "box";
+}
+
+const { productSlug, linkDfy, variant = "default" } = Astro.props;
+
+// Generate UTM parameters otomatis
+const utmParams = new URLSearchParams({
+  utm_source: "klikdev",
+  utm_medium: "bailout",
+  utm_campaign: productSlug,
+});
+
+const finalUrl = `${linkDfy}${linkDfy.includes("?") ? "&" : "?"}${utmParams.toString()}`;
+---
+
+{
+  variant === "box" ? (
+    <aside class="border-border bg-muted my-8 rounded-lg border-l-4 border-l-mbah-accent p-6">
+      <h3 class="text-lg font-semibold mb-2">Butuh yang Skala Enterprise?</h3>
+      <p class="text-muted-foreground mb-4">
+        Script ini murni untuk DIY. Jika butuh di-custom penuh atau integrasi
+        dengan sistem existing, saya (Dody/mbah) mengerjakannya secara
+        Done-For-You.
+      </p>
+      <a
+        href={finalUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="hover:bg-mbah-accent-hover inline-flex items-center rounded-md border-2 border-mbah-accent px-4 py-2 font-medium text-mbah-accent transition-colors hover:text-white"
+      >
+        Lihat Layanan DFY Saya →
+      </a>
+    </aside>
+  ) : (
+    <a
+      href={finalUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="hover:bg-mbah-accent-hover inline-flex items-center rounded-md border-2 border-mbah-accent px-4 py-2 font-medium text-mbah-accent transition-colors hover:text-white"
+    >
+      Pusing Setup-nya? Saya yang Kerjakan (DFY) →
+    </a>
+  )
+}
+</content>
