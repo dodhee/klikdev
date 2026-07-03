@@ -1,27 +1,30 @@
 ---
 import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import IconRss from "@/assets/icons/IconRss.svg";
 import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Socials from "@/components/Socials.astro";
-import Card from "@/components/Card.astro";
+import ProductCard from "@/components/ProductCard.astro";
 import LinkButton from "@/components/LinkButton.astro";
-import { getSortedPosts } from "@/utils/getSortedPosts";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
-const { socials, posts: postsConfig } = config;
+const { socials } = config;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 
-const posts = await getCollection("posts");
-const sortedPosts = getSortedPosts(posts);
-const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+// Query produk collection
+const produkCollection = await getCollection("produk");
+const sortedProduk = produkCollection
+  .filter(({ data }) => !data.draft)
+  .sort((a, b) => b.data.pubDatetime.valueOf() - a.data.pubDatetime.valueOf());
+
+const featuredProduk = sortedProduk.filter(({ data }) => data.featured);
+const allProduk = sortedProduk;
+
 const homePath = getRelativeLocaleUrl(locale, "");
 ---
 
@@ -33,43 +36,41 @@ const homePath = getRelativeLocaleUrl(locale, "");
     data-home-path={homePath}
     class="app-layout"
   >
+    <!-- Hero Section -->
     <section id="hero" class="border-border border-b pt-8 pb-6">
-      <h1 class="my-4 inline-block text-4xl font-bold sm:my-8 sm:text-5xl">
-        Mingalaba
+      <h1 class="my-4 text-4xl leading-tight font-bold sm:my-8 sm:text-5xl">
+        Berhenti Menulis Ulang Boilerplate Google Apps Script.
       </h1>
-      <a
-        target="_blank"
-        href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
-        class="inline-block"
-        aria-label="RSS Feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="stroke-accent scale-125 stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
 
-      <p>
-        AstroPaper is a minimal, responsive, accessible and SEO-friendly Astro
-        blog theme. This theme follows best practices and provides accessibility
-        out of the box. Light and dark mode are supported by default. Moreover,
-        additional color schemes can also be configured.
-      </p>
-      <p class="mt-2">
-        Read the blog posts or check
+      <div class="prose prose-lg max-w-none">
+        <p class="text-muted-foreground">
+          Saya Dody, tapi teman-teman panggil saya <strong
+            class="text-foreground">mbah</strong
+          >. Saya sudah menghabiskan ribuan jam mengotomasi Google Workspace dan
+          mengintegrasikan Gemini AI. Di sini, saya menjual sistem otomasi siap
+          pakai yang sudah saya uji di produksi. Bukan sekadar kode mentah, tapi
+          arsitektur yang bekerja.
+        </p>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-4">
         <LinkButton
-          class="hover:text-accent underline decoration-dashed underline-offset-4"
-          href="https://github.com/satnaing/astro-paper#readme"
+          href="#katalog"
+          class="bg-mbah-accent hover:bg-mbah-accent-hover text-white hover:text-white px-6 py-3 rounded-lg"
         >
-          README
-        </LinkButton> for more info.
-      </p>
+          Lihat Katalog Sistem
+        </LinkButton>
+        <LinkButton
+          href={getRelativeLocaleUrl(locale, "posts")}
+          class="border-border hover:border-foreground border px-6 py-3 rounded-lg"
+        >
+          Baca Panduan Gratis
+        </LinkButton>
+      </div>
+
       {
         socials.length > 0 && (
-          <div class="mt-4 flex max-sm:flex-col sm:items-center">
+          <div class="mt-6 flex max-sm:flex-col sm:items-center">
             <div class="me-2 mb-1 whitespace-nowrap sm:mb-0">
               {t.home.socialLinks}:
             </div>
@@ -79,45 +80,64 @@ const homePath = getRelativeLocaleUrl(locale, "");
       }
     </section>
 
+    <!-- DFY Callout -->
+    <section class="border-border border-b pt-8 pb-6">
+      <div class="bg-mbah-accent rounded-lg border-l-4 border-mbah-accent-hover p-6">
+        <p class="text-white leading-relaxed">
+          <strong class="text-white font-semibold"
+            >Tidak punya waktu untuk deploy sendiri?</strong
+          >
+          Cek layanan Done-For-You saya di
+          <a
+            href="https://godev.id?utm_source=klikdev&utm_medium=homepage&utm_campaign=dfy_callout"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-white hover:text-gray-100 font-semibold underline decoration-dashed underline-offset-4"
+          >
+            godev →
+          </a>
+        </p>
+      </div>
+    </section>
+
+    <!-- Featured Products -->
     {
-      featuredPosts.length > 0 && (
+      featuredProduk.length > 0 && (
         <section
           id="featured"
           class:list={[
             "pt-12 pb-6",
-            { "border-border border-b": recentPosts.length > 0 },
+            {
+              "border-border border-b":
+                allProduk.length > featuredProduk.length,
+            },
           ]}
         >
-          <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.featured}
+          <h2 class="mb-6 text-2xl font-semibold tracking-wide">
+            Produk Unggulan
           </h2>
-          <ul>
-            {featuredPosts.map(data => (
-              <Card variant="h3" {...data} />
+          <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {featuredProduk.map(produk => (
+              <ProductCard slug={produk.id} data={produk.data} />
             ))}
           </ul>
         </section>
       )
     }
 
-    {
-      recentPosts.length > 0 && (
-        <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.recentPosts}
-          </h2>
-          <ul>
-            {recentPosts.slice(0, postsConfig.perIndex).map(data => (
-              <Card variant="h3" {...data} />
-            ))}
-          </ul>
-        </section>
-      )
-    }
+    <!-- All Products Catalog -->
+    <section id="katalog" class="pt-12 pb-6">
+      <h2 class="mb-6 text-2xl font-semibold tracking-wide">
+        {featuredProduk.length > 0 ? "Semua Produk" : "Katalog Produk"}
+      </h2>
+      <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {allProduk.map(produk => <ProductCard slug={produk.id} data={produk.data} />)}
+      </ul>
+    </section>
 
     <div class="my-8 text-center">
       <LinkButton href={getRelativeLocaleUrl(locale, "posts")}>
-        {t.home.allPosts}
+        Baca Tutorial & Panduan
         <IconArrowRight class="inline-block rtl:-rotate-180" />
       </LinkButton>
     </div>

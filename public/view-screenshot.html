@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Screenshot DFY Callout</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            background: #0a0a0a;
+            font-family: system-ui, -apple-system, sans-serif;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        img {
+            width: 100%;
+            height: auto;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        h1 {
+            color: #f97316;
+            margin-bottom: 20px;
+        }
+        .info {
+            color: #999;
+            margin-bottom: 20px;
+            padding: 16px;
+            background: #111;
+            border-radius: 8px;
+            border-left: 4px solid #f97316;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Screenshot: DFY Callout - docs/cup.jpg</h1>
+        <div class="info">
+            <p><strong>File:</strong> docs/cup.jpg</p>
+            <p><strong>Feedback:</strong> "Border-left orange visible tapi tampilan belum sempurna"</p>
+        </div>
+        <img src="/cup.jpg" alt="DFY Callout Screenshot">
+    </div>
+</body>
+</html>
+```
+
+Sekarang buka browser dan akses:
+
+**http://localhost:4321/view-screenshot.html**
+
+Ini akan menampilkan screenshot yang mbah kirim. Dari screenshot tersebut saya bisa analisis apa yang perlu diperbaiki di DFY callout.
+
+Mbah, silakan buka URL di atas, lalu kasih tahu saya:
+1. **Apakah screenshot terlihat jelas** di browser?
+2. **Bagian mana yang "belum sempurna"** menurut mbah - apakah:
+   - Background kurang kontras?
+   - Text kurang readable?
+   - Padding kurang lega?
+   - Border orange terlalu tipis/tebal?
+   - Ada masalah layout lain?
+
+Sementara itu, saya juga akan cek dev server masih running atau tidak:
+
+```tool
+TOOL_NAME: run_terminal_command
+BEGIN_ARG: command
+Get-Process | Where-Object {$_.ProcessName -like '*node*'} | Select-Object Id, ProcessName, CPU

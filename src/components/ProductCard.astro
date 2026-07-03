@@ -1,0 +1,114 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { Image } from "astro:assets";
+
+type Props = {
+  slug: string;
+  data: CollectionEntry<"produk">['data'];
+};
+
+const { slug, data } = Astro.props;
+const { title, description, harga, thumbnail, stack, waktuDeploy, kategori } =
+  data;
+
+// Format Rupiah helper
+const formatRupiah = (amount: number): string => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    minimumFractionDigits: 0,
+  })
+    .format(amount)
+    .replace("Rp", "Rp ")
+    .trim();
+};
+---
+
+<li
+  class="group border-border bg-card relative overflow-hidden rounded-lg border transition-all hover:shadow-lg"
+>
+  <a href={`/produk/${slug}`} class="block">
+    <!-- Thumbnail -->
+    <div class="bg-muted aspect-video w-full overflow-hidden">
+      {
+        thumbnail ? (
+          typeof thumbnail === "string" ? (
+            <img
+              src={thumbnail}
+              alt={title}
+              class="h-full w-full object-cover transition-transform group-hover:scale-105"
+            />
+          ) : (
+            <Image
+              src={thumbnail}
+              alt={title}
+              class="h-full w-full object-cover transition-transform group-hover:scale-105"
+            />
+          )
+        ) : (
+          <div class="text-muted-foreground flex h-full items-center justify-center">
+            <span class="text-sm">No Image</span>
+          </div>
+        )
+      }
+    </div>
+
+    <!-- Content -->
+    <div class="p-4">
+      <!-- Kategori Badge -->
+      <span
+        class="bg-mbah-accent/10 text-mbah-accent mb-2 inline-block rounded-full px-2 py-1 text-xs font-medium"
+      >
+        {kategori}
+      </span>
+
+      <!-- Title -->
+      <h3
+        class="text-foreground group-hover:text-mbah-accent mb-2 text-lg font-semibold transition-colors"
+      >
+        {title}
+      </h3>
+
+      <!-- Description -->
+      <p class="text-muted-foreground mb-3 line-clamp-2 text-sm">
+        {description}
+      </p>
+
+      <!-- Stack Badges -->
+      <div class="mb-3 flex flex-wrap gap-1">
+        {
+          stack
+            .slice(0, 3)
+            .map(tech => (
+              <span class="bg-muted font-signature text-foreground rounded px-2 py-0.5 text-xs">
+                {tech}
+              </span>
+            ))
+        }
+        {
+          stack.length > 3 && (
+            <span class="bg-muted font-signature text-muted-foreground rounded px-2 py-0.5 text-xs">
+              +{stack.length - 3}
+            </span>
+          )
+        }
+      </div>
+
+      <!-- Footer: Harga & Waktu Deploy -->
+      <div
+        class="border-border flex items-center justify-between border-t pt-3"
+      >
+        <div>
+          <p class="text-muted-foreground text-xs">Harga</p>
+          <p class="text-mbah-accent whitespace-nowrap text-lg font-bold">
+            {formatRupiah(harga)}
+          </p>
+        </div>
+        <div class="text-right">
+          <p class="text-muted-foreground text-xs">Deploy</p>
+          <p class="font-signature text-foreground text-sm">{waktuDeploy}</p>
+        </div>
+      </div>
+    </div>
+  </a>
+</li>
