@@ -28,7 +28,7 @@ const locale = Astro.currentLocale ?? config.site.lang;
 // Breadcrumb data
 const breadcrumbs = [
   { label: "Home", url: getRelativeLocaleUrl(locale, "") },
-  { label: "Produk", url: getRelativeLocaleUrl(locale, "") + "#katalog" },
+  { label: "Produk", url: getRelativeLocaleUrl(locale, "katalog") },
   { label: produk.data.title, url: "" },
 ];
 
