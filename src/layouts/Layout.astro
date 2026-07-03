@@ -13,6 +13,10 @@ type Props = {
   description?: string;
   ogImage?: string;
   canonicalURL?: string;
+  // Props tambahan untuk produk (OPTIONAL)
+  ogType?: "website" | "article" | "product";
+  productPrice?: number;
+  productCurrency?: string;
 };
 
 const { site } = config;
@@ -22,6 +26,9 @@ const {
   description = site.description,
   ogImage = resolveDefaultOgImagePath(config),
   canonicalURL = new URL(Astro.url.pathname, Astro.site).href,
+  ogType = "website",
+  productPrice,
+  productCurrency = "IDR",
 } = Astro.props;
 
 const socialImageURL = new URL(ogImage, Astro.site ?? Astro.url);
@@ -59,12 +66,19 @@ const rssHref = getRelativeLocaleUrl(
     <link rel="sitemap" href={getAssetPath("sitemap-index.xml")} />
 
     <!-- Open Graph -->
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={site.title} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:image" content={socialImageURL} />
+
+    {ogType === "product" && productPrice && (
+      <>
+        <meta property="product:price:amount" content={productPrice.toString()} />
+        <meta property="product:price:currency" content={productCurrency} />
+      </>
+    )}
 
     <!-- Twitter / X -->
     <meta property="twitter:card" content="summary_large_image" />

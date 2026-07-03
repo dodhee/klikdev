@@ -1,0 +1,54 @@
+---
+interface Props {
+  name: string;
+  description: string;
+  image: string;
+  price: number;
+  currency: string;
+  url: string;
+  brand?: string;
+  category: string;
+  availability?: "InStock" | "OutOfStock" | "PreOrder";
+}
+
+const {
+  name,
+  description,
+  image,
+  price,
+  currency,
+  url,
+  brand = "KlikDev",
+  category,
+  availability = "InStock",
+} = Astro.props;
+
+// Ensure image is absolute URL
+const imageUrl = new URL(image, Astro.site ?? Astro.url).href;
+
+const productSchema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  name: name,
+  description: description,
+  image: imageUrl,
+  brand: {
+    "@type": "Brand",
+    name: brand,
+  },
+  category: category,
+  offers: {
+    "@type": "Offer",
+    url: url,
+    priceCurrency: currency,
+    price: price,
+    availability: `https://schema.org/${availability}`,
+    seller: {
+      "@type": "Organization",
+      name: brand,
+    },
+  },
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(productSchema)} />

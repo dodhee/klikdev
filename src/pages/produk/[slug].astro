@@ -1,7 +1,12 @@
 ---
 import { getCollection, type CollectionEntry, render } from "astro:content";
-import ProductLayout from "@/layouts/ProductLayout.astro";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Footer from "@/components/Footer.astro";
 import BailoutCTA from "@/components/BailoutCTA.astro";
+import ProductSchema from "@/components/ProductSchema.astro";
+import BreadcrumbListSchema from "@/components/BreadcrumbListSchema.astro";
+import FAQPageSchema from "@/components/FAQPageSchema.astro";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import config from "@/config";
 
@@ -40,14 +45,59 @@ const tabs = [
   { id: "panduan-deploy", label: "Panduan Deploy" },
   { id: "faq", label: "FAQ" },
 ];
+
+// FAQ data untuk schema
+const faqs = [
+  {
+    question: "Apakah bisa diintegrasikan dengan database eksternal?",
+    answer: "Ya, tapi perlu custom. Script ini by default hanya berinteraksi dengan Google Sheets. Jika butuh integrasi ke MySQL/PostgreSQL/Firebase, itu masuk kategori DFY (Done-For-You)."
+  },
+  {
+    question: "Berapa batas data yang bisa dihandle?",
+    answer: "Google Apps Script punya quota 6 menit execution time per trigger. Untuk data >10,000 rows, saya sarankan pakai batch processing (tidak include di script ini, perlu custom)."
+  },
+  {
+    question: "Apakah mendukung multi-user collaboration?",
+    answer: "Ya, script ini aman untuk multi-user. Setiap action tercatat dengan email user yang melakukan perubahan."
+  },
+  {
+    question: "Bagaimana cara update script jika ada bug?",
+    answer: "Pull update dari repo, lalu clasp push lagi. Trigger tidak perlu di-setup ulang."
+  },
+  {
+    question: "Apakah ada dokumentasi API?",
+    answer: "Ya, semua fungsi publik ada JSDoc-nya. Buka di Apps Script Editor untuk lihat intellisense."
+  }
+];
 ---
 
-<ProductLayout
+<Layout
   title={data.title}
   description={data.description}
   ogImage={typeof data.thumbnail === "string" ? data.thumbnail : undefined}
-  breadcrumbs={breadcrumbs}
+  ogType="product"
+  productPrice={data.harga}
+  productCurrency="IDR"
 >
+  <Fragment slot="head">
+    <ProductSchema
+      name={data.title}
+      description={data.description}
+      image={typeof data.thumbnail === "string" ? data.thumbnail : data.thumbnail.src}
+      price={data.harga}
+      currency="IDR"
+      url={Astro.url.href}
+      brand="KlikDev"
+      category={data.kategori}
+    />
+    
+    <BreadcrumbListSchema items={breadcrumbs} />
+    
+    <FAQPageSchema faqs={faqs} />
+  </Fragment>
+
+  <Header />
+  <main>
   <div class="app-layout py-8">
     <!-- Hero Section -->
     <section class="border-border border-b pb-8">
@@ -221,7 +271,9 @@ const tabs = [
     </div>
   </section>
   </div>
-</ProductLayout>
+  </main>
+  <Footer />
+</Layout>
 
 <script>
   // Tab navigation with scroll spy

@@ -1,0 +1,19 @@
+# KlikDev - Robots.txt
+# Allow all crawlers
+
+User-agent: *
+Allow: /
+
+# Disallow admin/draft pages (if any in future)
+Disallow: /admin/
+Disallow: /draft/
+
+# Sitemap location
+Sitemap: https://klikdev.my.id/sitemap-index.xml
+
+# Crawl-delay for aggressive bots (optional, adjust if needed)
+User-agent: AhrefsBot
+Crawl-delay: 10
+
+User-agent: SemrushBot
+Crawl-delay: 10

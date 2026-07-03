@@ -1,0 +1,239 @@
+---
+title: "Google Sheets Automation Engine"
+description: "Sistem otomasi Google Sheets yang menangani validasi data, notifikasi WhatsApp, dan sinkronisasi multi-sheet secara real-time."
+harga: 250000
+linkBeli: "https://wa.me/6281234796567?text=Halo%20mbah,%20saya%20mau%20beli%20Google%20Sheets%20Automation%20Engine"
+linkDfy: "https://godev.id/dfy/sheets-automation?utm_source=klikdev&utm_medium=bailout&utm_campaign=sheets-automation"
+stack: ["Google Apps Script", "Google Sheets API", "Clasp", "TypeScript"]
+waktuDeploy: "15-30 menit"
+kategori: "Google Apps Script"
+thumbnail: "https://placehold.co/800x450/f97316/ffffff?text=Sheets+Automation"
+featured: true
+draft: false
+pubDatetime: 2025-01-15T00:00:00.000Z
+---
+
+## Apa itu Google Sheets Automation Engine?
+
+**Google Sheets Automation Engine** adalah sistem otomasi berbasis Google Apps Script yang mengubah spreadsheet biasa menjadi aplikasi bisnis dengan validasi data otomatis, notifikasi WhatsApp real-time, dan sinkronisasi multi-sheet. Script ini menggunakan event-driven architecture untuk menangani perubahan data secara otomatis tanpa intervensi manual.
+
+**Ideal untuk**: Tim sales yang perlu tracking leads, inventory management sederhana, form pengumpulan data yang butuh validasi ketat.
+
+---
+
+<h2 id="masalah-solusi">Masalah dan Solusi</h2>
+
+### Masalah
+Anda punya Google Sheets yang diisi oleh banyak orang, tapi:
+- Data tidak konsisten (typo, format salah)
+- Tidak ada notifikasi real-time saat ada perubahan penting
+- Sinkronisasi antar sheet dilakukan manual
+- Validasi data cuma andalkan Data Validation bawaan Sheets (terbatas)
+
+### Solusi
+Script ini memberikan:
+- **Validasi Data Kustom**: Regex, cross-check dengan sheet lain, business logic custom
+- **Notifikasi WhatsApp**: Trigger otomatis saat ada data tertentu masuk
+- **Sinkronisasi Multi-Sheet**: Update otomatis ke sheet lain berdasarkan trigger
+- **Logging Aktivitas**: Semua perubahan tercatat dengan timestamp dan user
+
+---
+
+<h2 id="cara-kerja">Cara Kerja</h2>
+
+1. **Event-Driven Architecture**: Script berjalan otomatis saat ada `onEdit`, `onFormSubmit`, atau `onOpen`
+2. **Validasi Berlapis**: 
+   - Layer 1: Format (email, nomor telepon, dll)
+   - Layer 2: Business logic (stok cukup? duplikasi?)
+   - Layer 3: Cross-reference dengan database eksternal (opsional)
+3. **Notification Queue**: Notifikasi tidak langsung dikirim, tapi masuk queue untuk menghindari rate limit
+4. **Error Handling**: Setiap error tercatat di sheet log, tidak crash diam-diam
+
+### Diagram Alur
+
+```
+User Edit Cell → Apps Script Trigger → Validasi Data
+                                              ↓
+                                    ✅ Valid? → Simpan + Log
+                                              ↓
+                                    ❌ Invalid? → Tolak + Notifikasi Error
+                                              ↓
+                                    Sinkronisasi Sheet Lain (jika perlu)
+                                              ↓
+                                    Kirim WhatsApp Notification
+```
+
+---
+
+<h2 id="tech-stack">Tech Stack</h2>
+
+| Teknologi | Fungsi | Kenapa Dipakai |
+|-----------|--------|----------------|
+| Google Apps Script | Runtime environment | Native integration dengan Google Workspace |
+| Clasp | CLI untuk development | Hot reload, TypeScript support |
+| TypeScript | Type safety | Mengurangi bug saat development |
+| Google Sheets API | Akses data programmatic | Performa lebih cepat dari range.getValue() |
+| Fonnte API | WhatsApp notification | Reliable, support gambar & template message |
+
+### Perbandingan: Script Ini vs Manual vs Apps lain
+
+| Fitur | Manual | Zapier/Make | Script Ini |
+|-------|--------|-------------|------------|
+| **Validasi Custom** | ❌ Tidak bisa | ⚠️ Terbatas | ✅ Full control |
+| **Notifikasi Real-time** | ❌ Harus cek manual | ✅ Ada | ✅ Ada |
+| **Biaya Bulanan** | Gratis | $20-50/bulan | **Gratis** (one-time) |
+| **Kustomisasi Logic** | ❌ Tidak bisa | ⚠️ Terbatas | ✅ Full code access |
+| **Offline-first** | ✅ Ya | ❌ Perlu internet | ⚠️ Perlu internet untuk trigger |
+
+---
+
+<h2 id="panduan-deploy">Panduan Deploy</h2>
+
+### Prasyarat
+- Akun Google (sudah punya Sheets)
+- Node.js v16+ terinstall ([Download di sini](https://nodejs.org/))
+- Clasp terinstall: `npm install -g @google/clasp`
+- (Opsional) Akun Fonnte untuk WhatsApp notification
+
+### Langkah Deploy (15-30 Menit)
+
+#### 1. Clone Repository
+```bash
+git clone https://github.com/mbah-dody/sheets-automation-engine.git
+cd sheets-automation-engine
+```
+
+#### 2. Login Clasp
+```bash
+clasp login
+```
+Browser akan terbuka, pilih akun Google Anda.
+
+#### 3. Buat Project Baru
+```bash
+clasp create --type sheets --title "Automation Engine"
+```
+Catat Script ID yang muncul.
+
+#### 4. Konfigurasi
+Edit `src/config.ts`:
+```typescript
+export const CONFIG = {
+  NOTIFICATION_WEBHOOK: "https://api.fonnte.com/send", // Ganti dengan webhook Anda
+  FONNTE_API_KEY: "your-api-key-here", // Dari dashboard Fonnte
+  TARGET_SHEET_ID: "1abc...", // ID Google Sheets target (dari URL)
+  LOG_SHEET_NAME: "ActivityLog",
+  ADMIN_PHONE: "6281234567890" // Nomor admin yang dapat notifikasi error
+}
+```
+
+#### 5. Install Dependencies & Build
+```bash
+npm install
+npm run build
+```
+
+#### 6. Push ke Apps Script
+```bash
+clasp push
+```
+
+#### 7. Setup Trigger
+- Buka Apps Script Editor: `clasp open`
+- Klik **Trigger** (ikon jam di sidebar kiri)
+- Klik **+ Add Trigger**
+- Pilih fungsi: `onEdit`
+- Event type: `From spreadsheet` → `On edit`
+- Klik **Save**
+- Ulangi untuk `onFormSubmit` (jika pakai Google Form)
+
+#### 8. Test
+1. Buka Google Sheets Anda
+2. Edit cell di kolom yang sudah dikonfigurasi
+3. Cek tab **ActivityLog** untuk melihat log
+4. Cek WhatsApp untuk notifikasi (jika sudah setup Fonnte)
+
+### Troubleshooting
+
+**Error: "Script tidak berjalan saat edit cell"**
+- **Penyebab**: Trigger belum diaktifkan
+- **Solusi**: Ikuti langkah 7 lagi, pastikan trigger muncul di list
+
+**Error: "TypeError: Cannot read property 'getValue' of null"**
+- **Penyebab**: TARGET_SHEET_ID salah atau sheet tidak ditemukan
+- **Solusi**: Cek config.ts, pastikan Sheet ID benar (ambil dari URL sheet)
+
+**Notifikasi WhatsApp tidak terkirim**
+- **Penyebab**: API key Fonnte salah atau saldo habis
+- **Solusi**: Login ke dashboard Fonnte, cek API key dan saldo
+
+**Data tidak tersinkron ke sheet lain**
+- **Penyebab**: Permission sheet target adalah "Viewer"
+- **Solusi**: Ubah permission jadi "Editor" untuk email Apps Script
+
+**Script timeout (execution time >6 menit)**
+- **Penyebab**: Data terlalu banyak (>10k rows)
+- **Solusi**: Gunakan batch processing atau hubungi untuk DFY custom
+
+---
+
+<h2 id="faq">FAQ</h2>
+
+### Apakah bisa diintegrasikan dengan database eksternal seperti MySQL atau Firebase?
+Ya, tapi perlu custom code. Script ini by default hanya berinteraksi dengan Google Sheets. Jika butuh integrasi ke MySQL, PostgreSQL, atau Firebase, itu termasuk kategori **Done-For-You (DFY)** karena perlu setup server, authentication, dan error handling yang lebih kompleks.
+
+### Berapa batas data yang bisa dihandle oleh script ini?
+Google Apps Script punya **quota 6 menit execution time** per trigger. Untuk data di bawah 5,000 rows, script ini berjalan lancar. Untuk data 10,000+ rows, saya sarankan pakai **batch processing** (tidak include di script standar, perlu custom).
+
+### Apakah aman untuk multi-user collaboration?
+Ya, script ini **aman untuk multi-user**. Setiap action tercatat dengan:
+- Email user yang melakukan perubahan
+- Timestamp perubahan
+- Cell yang diubah
+- Nilai lama dan nilai baru
+
+### Bagaimana cara update script jika ada bug atau fitur baru?
+Sangat mudah:
+1. Pull update dari repo: `git pull origin main`
+2. Build ulang: `npm run build`
+3. Push ke Apps Script: `clasp push`
+4. **Trigger tidak perlu di-setup ulang** (masih aktif)
+
+### Apakah ada dokumentasi API untuk developer?
+Ya, semua fungsi publik ada **JSDoc comment**-nya. Buka file di Apps Script Editor, hover di function name untuk lihat intellisense dengan dokumentasi lengkap (parameter, return value, contoh usage).
+
+### Bisakah notifikasi dikirim ke Telegram atau Slack selain WhatsApp?
+Bisa, tapi perlu modifikasi kode. Script ini by default pakai Fonnte API (WhatsApp). Untuk Telegram, ganti dengan Telegram Bot API. Untuk Slack, pakai Slack Webhook. Dokumentasi ada di folder `/docs/integrations/`.
+
+### Apakah script ini melanggar Terms of Service Google?
+Tidak. Script ini 100% compliant dengan [Google Apps Script Quotas](https://developers.google.com/apps-script/guides/services/quotas). Tidak ada scraping, tidak ada spam, hanya otomasi internal untuk data Anda sendiri.
+
+### Berapa lama support/maintenance yang diberikan?
+Script ini **sudah production-ready**, tapi tetap butuh update berkala (misalnya Google ubah API). Saya kasih **1 tahun support gratis** untuk bug fixes (bukan feature request). Setelah itu, bisa perpanjang dengan biaya kecil atau upgrade ke DFY plan.
+
+---
+
+**Engineered by Dody (mbah)** — Bukan sekadar kode, tapi arsitektur yang bekerja.
+
+export const faqs = [
+  {
+    question: "Apakah bisa diintegrasikan dengan database eksternal seperti MySQL atau Firebase?",
+    answer: "Ya, tapi perlu custom code. Script ini by default hanya berinteraksi dengan Google Sheets. Jika butuh integrasi ke MySQL, PostgreSQL, atau Firebase, itu termasuk kategori Done-For-You (DFY) karena perlu setup server, authentication, dan error handling yang lebih kompleks."
+  },
+  {
+    question: "Berapa batas data yang bisa dihandle oleh script ini?",
+    answer: "Google Apps Script punya quota 6 menit execution time per trigger. Untuk data di bawah 5,000 rows, script ini berjalan lancar. Untuk data 10,000+ rows, saya sarankan pakai batch processing (tidak include di script standar, perlu custom)."
+  },
+  {
+    question: "Apakah aman untuk multi-user collaboration?",
+    answer: "Ya, script ini aman untuk multi-user. Setiap action tercatat dengan email user yang melakukan perubahan, timestamp perubahan, cell yang diubah, dan nilai lama serta nilai baru."
+  },
+  {
+    question: "Bagaimana cara update script jika ada bug atau fitur baru?",
+    answer: "Sangat mudah: Pull update dari repo (git pull origin main), build ulang (npm run build), push ke Apps Script (clasp push). Trigger tidak perlu di-setup ulang karena masih aktif."
+  },
+  {
+    question: "Apakah ada dokumentasi API untuk developer?",
+    answer: "Ya, semua fungsi publik ada JSDoc comment-nya. Buka file di Apps Script Editor, hover di function name untuk lihat intellisense dengan dokumentasi lengkap (parameter, return value, contoh usage)."
+  }
+];

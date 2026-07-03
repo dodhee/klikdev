@@ -24,8 +24,34 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      filter: page =>
-        config.features?.showArchives !== false || !page.endsWith("/archives/"),
+
+
+      filter: (page) => 
+        (config.features?.showArchives !== false || !page.endsWith("/archives/")) &&
+        !page.includes("/tags/"),
+      serialize: (item) => {
+        // Homepage priority tertinggi
+        if (item.url.endsWith("/")) {
+          item.priority = 1.0;
+        }
+        // Halaman katalog
+        else if (item.url.includes("/katalog")) {
+          item.priority = 0.9;
+        }
+        // Halaman produk (revenue pages)
+        else if (item.url.includes("/produk/")) {
+          item.priority = 0.9;
+        }
+        // Blog posts (content pages)
+        else if (item.url.includes("/posts/")) {
+          item.priority = 0.6;
+        }
+        // Halaman lain (about, search, dll)
+        else {
+          item.priority = 0.5;
+        }
+        return item;
+      },
     }),
   ],
   i18n: {
