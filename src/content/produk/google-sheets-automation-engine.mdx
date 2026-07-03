@@ -14,7 +14,7 @@ pubDatetime: 2025-01-15T00:00:00.000Z
 ---
 
 
-## Masalah dan Solusi 
+<h2 id="masalah-solusi">Masalah dan Solusi</h2> 
 
 ### Masalah
 Anda punya Google Sheets yang diisi oleh banyak orang, tapi:
@@ -31,7 +31,7 @@ Script ini memberikan:
 - **Logging Aktivitas**: Semua perubahan tercatat dengan timestamp dan user
 
 
-## Cara Kerja 
+<h2 id="cara-kerja">Cara Kerja</h2> 
 
 1. **Event-Driven Architecture**: Script berjalan otomatis saat ada `onEdit`, `onFormSubmit`, atau `onOpen`
 2. **Validasi Berlapis**: 
@@ -42,7 +42,7 @@ Script ini memberikan:
 4. **Error Handling**: Setiap error tercatat di sheet log, tidak crash diam-diam
 
 
-## Tech Stack 
+<h2 id="tech-stack">Tech Stack</h2> 
 
 | Teknologi | Fungsi |
 |-----------|--------|
@@ -53,7 +53,7 @@ Script ini memberikan:
 | Fonnte API | WhatsApp notification (optional) |
 
 
-## Panduan Deploy 
+<h2 id="panduan-deploy">Panduan Deploy</h2> 
 
 ### Prasyarat
 - Akun Google (sudah punya Sheets)
@@ -108,7 +108,7 @@ Edit cell di Sheets, cek log & notifikasi
 - **Notifikasi tidak terkirim**: Cek API key dan webhook URL
 - **Data tidak tersinkron**: Cek permission Sheets (harus Editor, bukan Viewer)
 
-## FAQ 
+<h2 id="faq">FAQ</h2> 
 
 ### Apakah bisa diintegrasikan dengan database eksternal?
 Ya, tapi perlu custom. Script ini by default hanya berinteraksi dengan Google Sheets. Jika butuh integrasi ke MySQL/PostgreSQL/Firebase, itu masuk kategori DFY (Done-For-You).
