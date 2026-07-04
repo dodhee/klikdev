@@ -47,7 +47,7 @@ const produk = defineCollection({
       stack: z.array(z.string()),
       waktuDeploy: z.string(),
       kategori: z.enum(["Google Apps Script", "AI Prompt", "Automation"]),
-      thumbnail: image().or(z.string()),
+      thumbnail: image(),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
       pubDatetime: z.date(),

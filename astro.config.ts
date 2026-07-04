@@ -2,7 +2,6 @@ import {
   defineConfig,
   envField,
   fontProviders,
-  svgoOptimizer,
 } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import mdx from "@astrojs/mdx";
@@ -24,8 +23,6 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-
-
       filter: (page) => 
         (config.features?.showArchives !== false || !page.endsWith("/archives/")) &&
         !page.includes("/tags/"),
@@ -103,8 +100,5 @@ export default defineConfig({
         optional: true,
       }),
     },
-  },
-  experimental: {
-    svgOptimizer: svgoOptimizer(),
   },
 });
