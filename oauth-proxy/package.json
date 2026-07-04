@@ -1,1 +1,1 @@
-{"name":"klikdev-oauth-proxy","version":"1.0.0","description":"OAuth proxy server untuk Decap CMS di klikdev.my.id","main":"api/index.js","scripts":{"start":"node api/index.js"},"dependencies":{},"engines":{"node":"18.x"}}
+{"name":"klikdev-oauth-proxy","version":"1.0.0","description":"OAuth proxy server untuk Decap CMS di klikdev.my.id","main":"api/index.js","scripts":{"start":"node api/index.js"},"dependencies":{},"engines":{"node":"24.x"}}
