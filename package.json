@@ -21,6 +21,7 @@
     "@astrojs/sitemap": "^3.7.3",
     "astro": "^6.4.8",
     "dayjs": "^1.11.21",
+    "decap-cms-app": "^3.14.1",
     "lodash.kebabcase": "^4.1.1",
     "rehype-callouts": "^2.1.2",
     "remark-collapse": "^0.1.2",

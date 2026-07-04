@@ -1,0 +1,168 @@
+﻿# Decap CMS Configuration untuk Production
+# Docs: https://decapcms.org/docs/configuration-options/
+
+backend:
+  name: github
+  repo: dodhee/klikdev
+  branch: main # Ganti ke 'master' jika branch utama Anda adalah master
+  base_url: https://api.netlify.com # OAuth endpoint
+  auth_endpoint: auth
+
+# Staging workflow - simple publish (no editorial workflow)
+publish_mode: simple
+
+# Media files location - DIPERBAIKI untuk production
+media_folder: "src/images/produk" # Where files are saved in repo
+public_folder: "/src/images/produk" # How to reference in content
+
+# CMS locale
+locale: "id"
+
+# Collections
+collections:
+  - name: "produk" # Internal identifier
+    label: "Produk" # Display name in CMS
+    folder: "src/content/produk" # Content location - DIPERBAIKI
+    create: true # Allow creating new products
+    slug: "{{slug}}" # Filename pattern
+    format: "frontmatter" # MDX with YAML frontmatter
+    extension: "mdx"
+    fields:
+      # Required fields
+      - label: "Judul"
+        name: "title"
+        widget: "string"
+        hint: "Nama produk lengkap (contoh: Google Sheets Automation Engine)"
+      
+      - label: "Deskripsi"
+        name: "description"
+        widget: "text"
+        hint: "Deskripsi singkat 1-2 kalimat untuk SEO (max 160 karakter)"
+        pattern: [".{10,160}", "Deskripsi harus 10-160 karakter"]
+      
+      - label: "Harga (Rp)"
+        name: "harga"
+        widget: "number"
+        value_type: "int"
+        hint: "Harga dalam rupiah (contoh: 150000)"
+      
+      - label: "Link Pembelian"
+        name: "linkBeli"
+        widget: "string"
+        hint: "URL lengkap (contoh: https://wa.me/6281234567890)"
+      
+      - label: "Link Done-For-You (Opsional)"
+        name: "linkDfy"
+        widget: "string"
+        required: false
+        hint: "URL layanan instalasi (opsional)"
+      
+      - label: "Stack Teknologi"
+        name: "stack"
+        widget: "list"
+        hint: "Teknologi yang digunakan (maks 5 item)"
+        max: 5
+      
+      - label: "Waktu Deploy"
+        name: "waktuDeploy"
+        widget: "string"
+        hint: "Estimasi waktu setup (contoh: 5 menit)"
+      
+      - label: "Kategori"
+        name: "kategori"
+        widget: "select"
+        options:
+          - "Google Apps Script"
+          - "AI Prompt"
+          - "Automation"
+          - "Web Development"
+      
+      - label: "Thumbnail"
+        name: "thumbnail"
+        widget: "image"
+        hint: "Upload gambar 1600x900px (16:9), max 200KB"
+        media_folder: "/src/images/produk"
+        public_folder: "/src/images/produk"
+      
+      # Meta fields
+      - label: "Featured"
+        name: "featured"
+        widget: "boolean"
+        default: false
+        hint: "Tampilkan di homepage sebagai produk unggulan?"
+      
+      - label: "Draft"
+        name: "draft"
+        widget: "boolean"
+        default: true
+        hint: "Draft = tidak muncul di website (unpublished)"
+      
+      - label: "Tanggal Publikasi"
+        name: "pubDatetime"
+        widget: "datetime"
+        format: "YYYY-MM-DDTHH:mm:ssZ"
+        date_format: "YYYY-MM-DD"
+        time_format: "HH:mm"
+        hint: "Tanggal produk dipublikasikan"
+      
+      - label: "Tanggal Update"
+        name: "modDatetime"
+        widget: "datetime"
+        format: "YYYY-MM-DDTHH:mm:ssZ"
+        date_format: "YYYY-MM-DD"
+        time_format: "HH:mm"
+        required: false
+        hint: "Tanggal terakhir diupdate (otomatis)"
+      
+      # Content body
+      - label: "Konten"
+        name: "body"
+        widget: "markdown"
+        hint: "Tulis konten produk dengan Markdown. Gunakan template dari _TEMPLATE.mdx"
+
+  # Blog posts collection (optional, untuk future)
+  - name: "posts"
+    label: "Blog Posts"
+    folder: "src/content/posts" # DIPERBAIKI
+    create: true
+    slug: "{{slug}}"
+    format: "frontmatter"
+    extension: "mdx"
+    fields:
+      - label: "Judul"
+        name: "title"
+        widget: "string"
+      
+      - label: "Deskripsi"
+        name: "description"
+        widget: "text"
+        pattern: [".{10,160}", "Deskripsi harus 10-160 karakter"]
+      
+      - label: "Tanggal Publikasi"
+        name: "pubDatetime"
+        widget: "datetime"
+        format: "YYYY-MM-DDTHH:mm:ssZ"
+      
+      - label: "Tanggal Update"
+        name: "modDatetime"
+        widget: "datetime"
+        format: "YYYY-MM-DDTHH:mm:ssZ"
+        required: false
+      
+      - label: "Featured"
+        name: "featured"
+        widget: "boolean"
+        default: false
+      
+      - label: "Draft"
+        name: "draft"
+        widget: "boolean"
+        default: true
+      
+      - label: "Tags"
+        name: "tags"
+        widget: "list"
+      
+      - label: "Konten"
+        name: "body"
+        widget: "markdown"
