@@ -1,0 +1,322 @@
+---
+title: "Google Sheets Watchdog - Sistem Monitoring & Alert Real-time"
+description: "Monitor perubahan data Google Sheets secara real-time dengan notifikasi otomatis ke WhatsApp, Email, dan Slack. Deteksi anomali dan validasi data tingkat enterprise."
+harga: 350000
+linkBeli: "https://wa.me/6281234796567?text=Halo%20mbah,%20saya%20mau%20beli%20Google%20Sheets%20Watchdog"
+linkDfy: "https://godev.id/dfy/sheets-watchdog?utm_source=klikdev&utm_medium=bailout&utm_campaign=sheets-watchdog"
+stack: ["Google Apps Script", "TypeScript", "Clasp", "Gmail API", "WhatsApp API"]
+waktuDeploy: "20 menit"
+kategori: "Google Apps Script"
+thumbnail: /src/images/produk/google-sheets-watchdog-khusus-UMKM.jpg
+featured: true
+draft: false
+pubDatetime: 2025-02-01T00:00:00.000Z
+modDatetime: 2025-06-15T00:00:00.000Z
+---
+
+**Google Sheets Watchdog** adalah sistem monitoring otomatis yang memantau perubahan data di Google Sheets dan mengirim notifikasi real-time ke berbagai channel (WhatsApp, Email, Slack). Dirancang khusus untuk tim yang mengelola data operasional seperti inventory, sales pipeline, atau ticketing system.
+
+<h2 id="masalah-solusi">Masalah dan Solusi</h2>
+
+### 🔴 Masalah yang Anda Hadapi
+
+Jika Anda mengelola Google Sheets untuk operasional bisnis, kemungkinan besar Anda mengalami:
+
+1. **Keterlambatan Informasi**: Tim tidak tahu ada perubahan penting sampai berjam-jam kemudian
+2. **Data Corruption**: Seseorang menghapus data penting tanpa sengaja, tidak ada yang sadar
+3. **Bottleneck Approval**: Atasan tidak tahu ada request yang perlu di-approve
+4. **Manual Checking**: Harus buka Sheets setiap 30 menit untuk cek update
+
+**Contoh Real Case:**
+- Sales memasukkan deal baru, tapi sales manager baru tahu besoknya → deal dingin
+- Inventory mencapai threshold kritis, tapi procurement tidak langsung order → stockout
+- Customer komplain di ticketing sheet, support tidak langsung respons → churn
+
+### ✅ Solusi dengan Watchdog
+
+Watchdog mengubah Google Sheets dari "data pasif" menjadi "sistem aktif yang berbicara":
+
+- **Alert Real-time**: Notifikasi langsung ke WhatsApp/Email dalam <30 detik
+- **Anomaly Detection**: Otomatis deteksi perubahan yang tidak wajar (contoh: harga tiba-tiba turun 90%)
+- **Multi-Channel Notification**: Satu event, bisa trigger notifikasi ke 3 channel sekaligus
+- **Audit Trail**: Semua perubahan tercatat dengan detail: siapa, kapan, apa yang diubah
+
+### 📊 Perbandingan dengan Alternatif
+
+| Fitur | Google Sheets Watchdog | Zapier + Google Sheets | Manual Checking | Google Notification (Native) |
+|-------|------------------------|------------------------|-----------------|------------------------------|
+| **Real-time Alert** | ✅ <30 detik | ⚠️ 1-15 menit delay | ❌ Harus manual | ⚠️ Hanya email |
+| **Custom Logic** | ✅ Unlimited | ⚠️ Terbatas tier | ❌ - | ❌ Tidak ada |
+| **Multi-Channel** | ✅ WA, Email, Slack | ⚠️ Bayar per channel | ❌ - | ❌ Email only |
+| **Anomaly Detection** | ✅ Built-in | ❌ Harus custom | ❌ - | ❌ Tidak ada |
+| **Biaya Bulanan** | ✅ One-time Rp 350k | ❌ $20-100/bulan | ✅ Gratis | ✅ Gratis |
+| **Ownership Data** | ✅ 100% milik Anda | ⚠️ Through 3rd party | ✅ 100% | ✅ 100% |
+
+<h2 id="cara-kerja">Cara Kerja</h2>
+
+### Arsitektur System
+
+```
+[Google Sheets] 
+    ↓ onEdit/onChange trigger
+[Watchdog Engine] 
+    ↓ Evaluasi rules
+[Notification Router]
+    ↓ ↓ ↓
+[WhatsApp] [Email] [Slack]
+```
+
+### Flow Detail
+
+1. **Event Capture**: Setiap kali ada perubahan di Sheets, trigger `onEdit()` berjalan
+2. **Rule Engine**: Watchdog cek semua rule yang Anda define (contoh: "jika stok <10, alert ke procurement")
+3. **Data Validation**: Cek apakah data baru valid (format, range, business logic)
+4. **Notification Dispatch**: Kirim notifikasi ke channel yang ditentukan dengan template custom
+5. **Logging**: Catat semua event ke sheet log untuk audit
+
+### Contoh Use Case
+
+**Case 1: Sales Pipeline Alert**
+```typescript
+// Rule: Jika deal value >50 juta, alert ke sales manager
+if (newDeal.value > 50_000_000) {
+  notifyWhatsApp(salesManager, `Deal baru: ${newDeal.client} - Rp ${newDeal.value}`);
+}
+```
+
+**Case 2: Inventory Threshold**
+```typescript
+// Rule: Jika stok <threshold, alert procurement
+if (currentStock < product.minStock) {
+  notifyEmail(procurement, `LOW STOCK: ${product.name} tersisa ${currentStock} unit`);
+}
+```
+
+**Case 3: Anomaly Detection**
+```typescript
+// Rule: Jika harga produk turun >50% dalam 1 hari, flag sebagai suspicious
+if (priceChange < -50) {
+  notifySlack(admin, `⚠️ ANOMALY: ${product.name} harga turun ${priceChange}%`);
+}
+```
+
+<h2 id="tech-stack">Tech Stack</h2>
+
+| Teknologi | Fungsi | Kenapa Dipilih |
+|-----------|--------|----------------|
+| **Google Apps Script** | Runtime environment | Native integration dengan Google Workspace |
+| **TypeScript** | Development language | Type safety, mengurangi bug di production |
+| **Clasp** | Deployment CLI | Version control, CI/CD ready |
+| **Gmail API** | Email notifications | Gratis, quota tinggi (2000 email/hari) |
+| **Fonnte API** | WhatsApp notifications | Reliable, support indonesian number |
+| **Slack Webhook** | Slack notifications | Real-time, mendukung rich formatting |
+
+### Dependency & Quota
+
+- **Google Apps Script Quota**: 
+  - Execution time: 6 menit/run (cukup untuk 10,000+ rows)
+  - Trigger quota: 20 runs/user/hour (lebih dari cukup untuk most use case)
+- **Gmail API**: 2,000 email/day (lebih dari cukup)
+- **WhatsApp API (Fonnte)**: Tergantung paket yang Anda beli
+
+<h2 id="panduan-deploy">Panduan Deploy</h2>
+
+### Prasyarat
+
+Pastikan Anda sudah punya:
+- ✅ Google Account dengan Google Sheets yang akan dimonitor
+- ✅ Node.js v16 atau lebih baru ([Download](https://nodejs.org))
+- ✅ Git terinstall ([Download](https://git-scm.com))
+- ✅ Akun WhatsApp API (optional, bisa pakai [Fonnte](https://fonnte.com))
+
+### Langkah 1: Setup Clasp
+
+```bash
+# Install Clasp globally
+npm install -g @google/clasp
+
+# Login ke Google Account
+clasp login
+```
+
+### Langkah 2: Clone & Install
+
+```bash
+# Clone repository (link dikirim setelah pembayaran)
+git clone https://github.com/mbah-dody/sheets-watchdog-premium.git
+cd sheets-watchdog-premium
+
+# Install dependencies
+npm install
+```
+
+### Langkah 3: Konfigurasi
+
+Edit file `src/config.ts`:
+
+```typescript
+export const CONFIG = {
+  // ID Google Sheets yang akan dimonitor
+  SHEET_ID: "1abc123...", // Ganti dengan ID Sheets Anda
+  
+  // Notification channels (isi yang Anda pakai)
+  WHATSAPP: {
+    enabled: true,
+    apiKey: "YOUR_FONNTE_API_KEY",
+    targets: [
+      { name: "Sales Manager", phone: "6281234567890" },
+      { name: "Procurement", phone: "6281234567891" }
+    ]
+  },
+  
+  EMAIL: {
+    enabled: true,
+    from: "alert@yourdomain.com",
+    targets: ["manager@company.com", "admin@company.com"]
+  },
+  
+  SLACK: {
+    enabled: false, // Set true jika mau pakai
+    webhookUrl: "https://hooks.slack.com/services/..."
+  },
+  
+  // Monitoring rules
+  RULES: [
+    {
+      name: "High Value Deal",
+      sheet: "Sales Pipeline",
+      column: "Deal Value",
+      condition: (value) => value > 50_000_000,
+      notify: ["whatsapp:sales-manager", "email:ceo@company.com"]
+    },
+    {
+      name: "Low Stock Alert",
+      sheet: "Inventory",
+      column: "Current Stock",
+      condition: (value, row) => value < row["Min Stock"],
+      notify: ["whatsapp:procurement"]
+    }
+  ]
+};
+```
+
+### Langkah 4: Deploy ke Google Apps Script
+
+```bash
+# Build TypeScript to JavaScript
+npm run build
+
+# Create new Apps Script project
+clasp create --type sheets --title "Sheets Watchdog"
+
+# Push code to Apps Script
+clasp push
+
+# Open in browser untuk setup trigger
+clasp open
+```
+
+### Langkah 5: Setup Triggers
+
+Di Apps Script Editor:
+1. Klik icon **Triggers** (⏰ jam)
+2. Klik **+ Add Trigger**
+3. Pilih function: `onEditTrigger`
+4. Event type: `On edit`
+5. **Save**
+
+Ulangi untuk trigger lain jika perlu (`onChangeTrigger`, `onFormSubmit`).
+
+### Langkah 6: Test
+
+1. Buka Google Sheets yang dimonitor
+2. Edit cell yang memenuhi rule (contoh: masukkan deal value >50 juta)
+3. Cek notifikasi di WhatsApp/Email dalam <30 detik
+4. Cek sheet "Activity Log" untuk melihat event tercatat
+
+### Troubleshooting
+
+| Problem | Solution |
+|---------|----------|
+| Trigger tidak berjalan | Cek di Apps Script Editor > Executions, lihat error log |
+| Notifikasi tidak terkirim | Verify API key di `config.ts`, cek quota API |
+| Script timeout | Kurangi jumlah rows yang diproses per run, atau split jadi batch |
+| Permission denied | Pastikan Sheets dibuka dengan akun yang sama dengan yang deploy script |
+
+<h2 id="faq">FAQ</h2>
+
+### Apakah script ini bisa monitoring multiple sheets sekaligus?
+
+Ya, bisa. Edit `CONFIG.RULES` dan tambahkan rules untuk sheets berbeda:
+
+```typescript
+RULES: [
+  { sheet: "Sales Pipeline", ... },
+  { sheet: "Inventory", ... },
+  { sheet: "Customer Tickets", ... }
+]
+```
+
+Tapi ingat, semakin banyak rules, semakin lama execution time. Pastikan tidak melebihi 6 menit.
+
+### Bagaimana jika saya punya 100+ rules?
+
+Untuk kasus kompleks seperti ini, saya sarankan upgrade ke **Enterprise Custom Solution** (Done-For-You). Kita bisa:
+- Optimasi rule engine dengan caching
+- Split processing jadi async jobs
+- Integrate dengan database eksternal untuk faster lookup
+
+Hubungi saya di [godev.id](https://godev.id) untuk konsultasi.
+
+### Apakah bisa integrasi dengan Telegram atau Discord?
+
+Tidak include di script ini, tapi mudah ditambahkan. Telegram dan Discord sama-sama pakai webhook. Jika butuh, bisa custom (extra fee) atau upgrade ke DFY.
+
+### Berapa batas notifikasi per hari?
+
+Tergantung API yang Anda pakai:
+- **Gmail**: 2,000 email/day (gratis)
+- **WhatsApp (Fonnte)**: Tergantung paket (100-1000 pesan/hari)
+- **Slack**: Unlimited (self-hosted webhook)
+
+Jika over quota, script otomatis fallback ke logging di sheet (tidak crash).
+
+### Apakah data saya aman?
+
+100% aman. Script ini berjalan **di Google Apps Script Anda sendiri**, tidak ada data yang keluar ke server pihak ketiga kecuali untuk notifikasi (dan itu pun encrypted). Source code bisa Anda review sepenuhnya.
+
+### Bagaimana cara update script kalau ada versi baru?
+
+```bash
+git pull origin main
+npm run build
+clasp push
+```
+
+Trigger tidak perlu disetup ulang.
+
+### Apakah bisa digunakan untuk production?
+
+Ya, script ini production-ready. Sudah dipakai di beberapa UMKM dan startup untuk:
+- Sales pipeline monitoring (50+ deals/day)
+- Inventory management (200+ SKU)
+- Customer support ticketing (100+ tickets/day)
+
+### Apakah ada dokumentasi API untuk developer?
+
+Ya, semua fungsi publik ada JSDoc-nya. Buka di Apps Script Editor untuk lihat intellisense. Dokumentasi lengkap juga ada di folder `docs/` setelah clone repo.
+
+### Bisakah saya menjual atau memodifikasi script ini?
+
+Tidak, ini adalah **single-use license**. Anda bisa modifikasi untuk kebutuhan internal perusahaan Anda, tapi tidak boleh:
+- Dijual ulang (resell)
+- Didistribusikan ke pihak lain
+- Digunakan untuk jasa konsultan ke klien
+
+Jika butuh license komersial, hubungi saya.
+
+---
+
+**Engineered by Dody (mbah)** — Sistem yang bekerja 24/7, jadi Anda tidak perlu.
+
+**🎯 Siap Deploy?** [Beli Sekarang via WhatsApp](https://wa.me/6281234796567?text=Halo%20mbah,%20saya%20mau%20beli%20Google%20Sheets%20Watchdog) atau [Pusing Setup-nya? Saya yang Kerjakan (DFY)](https://godev.id/dfy/sheets-watchdog?utm_source=klikdev&utm_medium=bailout&utm_campaign=sheets-watchdog)
