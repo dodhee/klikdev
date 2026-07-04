@@ -4,9 +4,9 @@
 backend:
   name: github
   repo: dodhee/klikdev
-  branch: main # Ganti ke 'master' jika branch utama Anda adalah master
-  base_url: https://api.netlify.com # OAuth endpoint
-  auth_endpoint: auth
+  branch: main
+  base_url: https://klikdev-oauth-proxy.vercel.app
+  auth_endpoint: api/auth
 
 # Staging workflow - simple publish (no editorial workflow)
 publish_mode: simple
