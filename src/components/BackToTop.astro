@@ -1,0 +1,68 @@
+---
+/**
+ * Back to Top Button Component
+ * Muncul saat user scroll ke bawah > 300px
+ */
+---
+
+<button
+  id="back-to-top"
+  class="fixed bottom-6 right-6 z-50 hidden h-12 w-12 items-center justify-center rounded-full bg-mbah-accent text-white shadow-lg transition-all duration-300 hover:bg-mbah-accent-hover hover:scale-110 focus:outline-none focus:ring-2 focus:ring-mbah-accent focus:ring-offset-2"
+  aria-label="Kembali ke atas"
+  title="Kembali ke atas"
+>
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+  >
+    <path d="M12 19V5M5 12l7-7 7 7"></path>
+  </svg>
+</button>
+
+<script>
+  function initBackToTop() {
+    const backToTopBtn = document.getElementById('back-to-top');
+    if (!backToTopBtn) return;
+
+    // Show/hide button based on scroll position
+    function toggleButton() {
+      if (!backToTopBtn) return;
+      
+      if (window.scrollY > 300) {
+        backToTopBtn.classList.remove('hidden');
+        backToTopBtn.classList.add('flex');
+      } else {
+        backToTopBtn.classList.add('hidden');
+        backToTopBtn.classList.remove('flex');
+      }
+    }
+
+    // Scroll to top smoothly
+    function scrollToTop() {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
+    // Event listeners
+    window.addEventListener('scroll', toggleButton);
+    backToTopBtn.addEventListener('click', scrollToTop);
+
+    // Initial check
+    toggleButton();
+  }
+
+  // Init on page load
+  document.addEventListener('DOMContentLoaded', initBackToTop);
+
+  // Re-init on Astro page transitions
+  document.addEventListener('astro:after-swap', initBackToTop);
+</script>

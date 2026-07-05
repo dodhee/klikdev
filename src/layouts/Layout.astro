@@ -5,6 +5,7 @@ import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
 import { getAssetPath } from "@/utils/withBase";
 import ContactModal from "@/components/ContactModal.astro";
+import BackToTop from "@/components/BackToTop.astro";
 import config from "@/config";
 import "@/styles/global.css";
 
@@ -138,6 +139,9 @@ const rssHref = getRelativeLocaleUrl(
     
     <!-- Contact Modal (available globally) -->
     <ContactModal />
+    
+    <!-- Back to Top Button (available globally) -->
+    <BackToTop />
     
     <script>
       import "@/scripts/theme";

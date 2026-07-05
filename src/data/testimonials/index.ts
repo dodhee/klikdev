@@ -16,10 +16,14 @@ import { testimonialSchema, type Testimonial } from "./schema";
 // Import testimonial JSON files manually
 // NOTE: Setiap produk baru butuh import manual di sini
 import googleSheetsAutomationTestimonials from "./google-sheets-automation-engine-optimized.json";
+import geminiPromptLibraryTestimonials from "./gemini-prompt-library.json";
+import googleSheetsWatchdogTestimonials from "./google-sheets-watchdog-premium.json";
 
 // Aggregate all testimonials
 const allTestimonials: Testimonial[] = [
   ...googleSheetsAutomationTestimonials,
+  ...geminiPromptLibraryTestimonials,
+  ...googleSheetsWatchdogTestimonials,
 ].map(t => testimonialSchema.parse(t));
 
 /**

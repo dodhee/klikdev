@@ -1,0 +1,306 @@
+---
+import type { Testimonial } from "@/data/testimonials/schema";
+
+interface Props {
+  testimonials: Testimonial[];
+}
+
+const { testimonials } = Astro.props;
+
+/**
+ * Format tanggal ke bahasa Indonesia
+ */
+function formatDate(dateString: string): string {
+  const date = new Date(dateString);
+  const months = [
+    "Januari", "Februari", "Maret", "April", "Mei", "Juni",
+    "Juli", "Agustus", "September", "Oktober", "November", "Desember"
+  ];
+  
+  const day = date.getDate();
+  const month = months[date.getMonth()];
+  const year = date.getFullYear();
+  
+  return `${day} ${month} ${year}`;
+}
+
+/**
+ * Generate avatar fallback dari nama
+ */
+function getInitials(name: string): string {
+  return name
+    .split(' ')
+    .map(n => n[0])
+    .join('')
+    .toUpperCase()
+    .slice(0, 2);
+}
+---
+
+{testimonials.length > 0 && (
+  <section class="border-border border-b pt-12 pb-6">
+    <div class="mb-8">
+      <h2 class="text-2xl font-semibold tracking-wide mb-2">
+        Apa Kata Pengguna Kami?
+      </h2>
+      <p class="text-muted-foreground">
+        Testimoni dari pembeli yang sudah menggunakan produk kami
+      </p>
+    </div>
+
+    {/* Carousel Container */}
+    <div class="relative overflow-hidden pb-2">
+      {/* Carousel Track */}
+      <div 
+        id="testimonial-track"
+        class="flex gap-6"
+        style="will-change: transform;"
+      >
+        {/* Render testimonials 2x untuk infinite loop effect */}
+        {[...testimonials, ...testimonials].map((testimonial, index) => (
+          <div 
+            class="testimonial-card shrink-0 w-75 sm:w-87.5"
+            data-index={index}
+          >
+            <div class="bg-card border-border h-full flex flex-col rounded-lg border p-6 shadow-sm transition-shadow hover:shadow-md">
+              {/* Header with Avatar and Name */}
+              <div class="mb-4 flex items-start gap-3">
+                <div class="shrink-0">
+                  {testimonial.avatar ? (
+                    <img
+                      src={testimonial.avatar}
+                      alt={testimonial.name}
+                      class="h-12 w-12 rounded-full object-cover"
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div class="bg-mbah-accent/10 text-mbah-accent flex h-12 w-12 items-center justify-center rounded-full text-sm font-semibold">
+                      {getInitials(testimonial.name)}
+                    </div>
+                  )}
+                </div>
+                <div class="min-w-0 flex-1">
+                  <h3 class="text-foreground truncate font-semibold">
+                    {testimonial.name}
+                  </h3>
+                  {testimonial.role && (
+                    <p class="text-muted-foreground truncate text-sm">
+                      {testimonial.role}
+                    </p>
+                  )}
+                  <div class="mt-1 flex items-center gap-1">
+                    {Array.from({ length: 5 }, (_, i) => (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill={i < testimonial.rating ? "currentColor" : "none"}
+                        stroke="currentColor"
+                        stroke-width="2"
+                        class:list={[
+                          "h-4 w-4",
+                          i < testimonial.rating ? "text-yellow-500" : "text-muted-foreground"
+                        ]}
+                      >
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* Content - Fixed height with ellipsis */}
+              <div class="mb-4 flex-1">
+                <p class="text-muted-foreground line-clamp-4 text-sm leading-relaxed">
+                  "{testimonial.content}"
+                </p>
+              </div>
+
+              {/* Footer with Date and Verified Badge */}
+              <div class="flex items-center justify-between gap-2 border-t-2 border-border pt-3">
+                <time class="text-muted-foreground text-xs">
+                  {formatDate(testimonial.date)}
+                </time>
+                {testimonial.verified && (
+                  <span class="bg-green-500/10 text-green-600 dark:text-green-400 inline-flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      class="h-3 w-3"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z"
+                        clip-rule="evenodd"
+                      />
+                    </svg>
+                    Verified
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Navigation Buttons - Optional, for manual control */}
+      <button
+        id="carousel-prev"
+        class="absolute left-0 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background border-border hidden sm:flex h-10 w-10 items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-all hover:scale-110"
+        aria-label="Previous testimonial"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M15 18l-6-6 6-6"></path>
+        </svg>
+      </button>
+      <button
+        id="carousel-next"
+        class="absolute right-0 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background border-border hidden sm:flex h-10 w-10 items-center justify-center rounded-full border shadow-md backdrop-blur-sm transition-all hover:scale-110"
+        aria-label="Next testimonial"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M9 18l6-6-6-6"></path>
+        </svg>
+      </button>
+    </div>
+  </section>
+)}
+
+<script>
+  function initTestimonialCarousel() {
+    const track = document.getElementById('testimonial-track');
+    const prevBtn = document.getElementById('carousel-prev');
+    const nextBtn = document.getElementById('carousel-next');
+
+    if (!track) return;
+
+    const cards = track.querySelectorAll('.testimonial-card');
+    const cardCount = cards.length / 2; // Dibagi 2 karena kita render 2x
+    const cardWidth = (cards[0] as HTMLElement)?.offsetWidth || 300;
+    const gap = 24; // 1.5rem = 24px
+    const scrollAmount = cardWidth + gap;
+
+    let currentIndex = 0;
+    let intervalId: number | null = null;
+
+    function updateTransform() {
+      const offset = currentIndex * scrollAmount;
+      track!.style.transform = `translateX(-${offset}px)`;
+    }
+
+    function next() {
+      currentIndex++;
+      
+      // Infinite loop: reset ke awal tanpa animasi
+      if (currentIndex >= cardCount) {
+        track!.style.transition = 'none';
+        currentIndex = 0;
+        updateTransform();
+        
+        // Re-enable transition after reset
+        setTimeout(() => {
+          track!.style.transition = 'transform 800ms cubic-bezier(0.4, 0, 0.2, 1)';
+        }, 50);
+      } else {
+        updateTransform();
+      }
+    }
+
+    function prev() {
+      if (currentIndex === 0) {
+        // Jump to end without animation
+        track!.style.transition = 'none';
+        currentIndex = cardCount - 1;
+        updateTransform();
+        
+        setTimeout(() => {
+          track!.style.transition = 'transform 500ms ease-in-out';
+        }, 50);
+      } else {
+        currentIndex--;
+        updateTransform();
+      }
+    }
+
+    function startAutoPlay() {
+      if (intervalId) return;
+      intervalId = window.setInterval(next, 4000);
+    }
+
+    function stopAutoPlay() {
+      if (intervalId) {
+        clearInterval(intervalId);
+        intervalId = null;
+      }
+    }
+
+    // Event Listeners
+    prevBtn?.addEventListener('click', () => {
+      stopAutoPlay();
+      prev();
+    });
+
+    nextBtn?.addEventListener('click', () => {
+      stopAutoPlay();
+      next();
+    });
+
+    // Pause on hover
+    track!.addEventListener('mouseenter', stopAutoPlay);
+    track!.addEventListener('mouseleave', startAutoPlay);
+
+    // Start auto-play
+    startAutoPlay();
+
+    // Cleanup
+    return () => {
+      if (intervalId) clearInterval(intervalId);
+    };
+  }
+
+  // Init on page load
+  document.addEventListener('DOMContentLoaded', initTestimonialCarousel);
+
+  // Re-init on Astro page transitions
+  document.addEventListener('astro:after-swap', initTestimonialCarousel);
+</script>
+
+<style>
+  /* Ensure consistent card heights */
+  .testimonial-card {
+    min-height: 240px;
+  }
+
+  /* Line clamp for content */
+  .line-clamp-4 {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Smooth transitions */
+  #testimonial-track {
+    transition: transform 800ms cubic-bezier(0.4, 0, 0.2, 1);
+  }
+</style>
