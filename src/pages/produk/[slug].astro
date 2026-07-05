@@ -9,6 +9,7 @@ import BreadcrumbListSchema from "@/components/BreadcrumbListSchema.astro";
 import FAQPageSchema from "@/components/FAQPageSchema.astro";
 import AggregateRatingSchema from "@/components/AggregateRatingSchema.astro";
 import TestimonialList from "@/components/TestimonialList.astro";
+import RelatedProducts from "@/components/RelatedProducts.astro";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import config from "@/config";
 import { getTestimonialsByProduct } from "@/data/testimonials";
@@ -37,6 +38,9 @@ const locale = Astro.currentLocale ?? config.site.lang;
 // Load testimonials untuk produk ini
 const testimonials = getTestimonialsByProduct(produk.id);
 const aggregateRating = calculateAggregateRating(testimonials);
+
+// Load all products untuk related products
+const allProducts = await getCollection("produk");
 
 // Breadcrumb data
 const breadcrumbs = [
@@ -274,6 +278,15 @@ const faqs = [
     productSlug={produk.id}
     productTitle={data.title}
     whatsappNumber="6281234796567"
+  />
+
+  <!-- Related Products Section -->
+  <RelatedProducts
+    currentProductId={produk.id}
+    currentCategory={data.kategori}
+    currentStack={data.stack}
+    allProducts={allProducts}
+    maxProducts={3}
   />
 
   <!-- Bail-out Alert Box (Footer) -->

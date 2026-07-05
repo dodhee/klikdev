@@ -1,0 +1,92 @@
+---
+import type { CollectionEntry } from "astro:content";
+import ProductCard from "./ProductCard.astro";
+
+interface Props {
+  currentProductId: string;
+  currentCategory: string;
+  currentStack: string[];
+  allProducts: CollectionEntry<"produk">[];
+  maxProducts?: number;
+}
+
+const {
+  currentProductId,
+  currentCategory,
+  currentStack,
+  allProducts,
+  maxProducts = 3,
+} = Astro.props;
+
+/**
+ * Filter dan rank produk berdasarkan relevansi
+ * 
+ * CARA KERJA:
+ * 1. Exclude produk saat ini
+ * 2. Prioritas: Kategori sama > Stack overlap > Random
+ * 3. Return max N produk
+ */
+function getRelatedProducts(
+  products: CollectionEntry<"produk">[],
+  currentId: string,
+  category: string,
+  stack: string[],
+  max: number
+): CollectionEntry<"produk">[] {
+  // Filter: exclude current product dan draft
+  const candidates = products.filter(
+    p => p.id !== currentId && !p.data.draft
+  );
+
+  // Score setiap produk berdasarkan relevansi
+  const scored = candidates.map(product => {
+    let score = 0;
+
+    // +10 poin jika kategori sama
+    if (product.data.kategori === category) {
+      score += 10;
+    }
+
+    // +1 poin per tech stack yang overlap
+    const stackOverlap = product.data.stack.filter(tech =>
+      stack.includes(tech)
+    ).length;
+    score += stackOverlap;
+
+    return { product, score };
+  });
+
+  // Sort by score (descending), lalu ambil top N
+  return scored
+    .sort((a, b) => b.score - a.score)
+    .slice(0, max)
+    .map(item => item.product);
+}
+
+const relatedProducts = getRelatedProducts(
+  allProducts,
+  currentProductId,
+  currentCategory,
+  currentStack,
+  maxProducts
+);
+---
+
+{relatedProducts.length > 0 && (
+  <section class="border-border border-t py-8">
+    <div class="mb-6">
+      <h2 class="text-foreground mb-2 text-2xl font-semibold">
+        Produk Terkait
+      </h2>
+      <p class="text-muted-foreground">
+        Produk lain yang mungkin Anda butuhkan
+      </p>
+    </div>
+
+    <ul class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {relatedProducts.map(product => (
+        <ProductCard slug={product.id} data={product.data} />
+      ))}
+    </ul>
+  </section>
+)}
