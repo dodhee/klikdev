@@ -1,0 +1,49 @@
+---
+interface Step {
+  name: string;
+  text: string;
+  url?: string;
+  image?: string;
+}
+
+interface Props {
+  name: string;
+  description: string;
+  totalTime?: string; // Format: PT10M (10 minutes), PT1H (1 hour)
+  steps: Step[];
+}
+
+const { name, description, totalTime, steps } = Astro.props;
+
+/**
+ * Generate HowTo schema untuk step-by-step guides
+ * 
+ * CARA KERJA:
+ * - Mengubah panduan deploy menjadi structured data
+ * - Google bisa tampilkan step-by-step di SERP
+ * - Format duration: ISO 8601 (PT10M = 10 menit)
+ * 
+ * SEO BENEFIT:
+ * - Rich results "How-to" di Google Search
+ * - Increased CTR dari SERP
+ * - Featured snippet opportunity
+ */
+
+const howToSchema = {
+  "@context": "https://schema.org",
+  "@type": "HowTo",
+  "name": name,
+  "description": description,
+  ...(totalTime && { "totalTime": totalTime }),
+  "step": steps.map((step, index) => ({
+    "@type": "HowToStep",
+    "position": index + 1,
+    "name": step.name,
+    "text": step.text,
+    ...(step.url && { "url": step.url }),
+    ...(step.image && { "image": step.image })
+  }))
+};
+---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(howToSchema)}></script>

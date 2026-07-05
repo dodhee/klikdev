@@ -1,0 +1,51 @@
+---
+import type { Testimonial } from "@/data/testimonials/schema";
+
+interface Props {
+  reviews: Testimonial[];
+  itemName: string;
+  itemUrl: string;
+}
+
+const { reviews, itemName, itemUrl } = Astro.props;
+
+/**
+ * Generate Review schema untuk individual reviews
+ * 
+ * CARA KERJA:
+ * - Setiap testimonial jadi satu Review object
+ * - Include rating, author, datePublished, reviewBody
+ * - Nested dalam Product schema (sudah ada di ProductSchema.astro)
+ * 
+ * SEO BENEFIT:
+ * - Google bisa tampilkan individual reviews di SERP
+ * - Rich snippets lebih detail
+ * - Trust signal lebih kuat
+ */
+
+const reviewSchemas = reviews.map(review => ({
+  "@context": "https://schema.org",
+  "@type": "Review",
+  "reviewRating": {
+    "@type": "Rating",
+    "ratingValue": review.rating,
+    "bestRating": 5,
+    "worstRating": 1
+  },
+  "author": {
+    "@type": "Person",
+    "name": review.name
+  },
+  "datePublished": review.date,
+  "reviewBody": review.content,
+  "itemReviewed": {
+    "@type": "Product",
+    "name": itemName,
+    "url": itemUrl
+  }
+}));
+---
+
+{reviews.map((_review, index) => (
+  <script type="application/ld+json" is:inline set:html={JSON.stringify(reviewSchemas[index])}></script>
+))}

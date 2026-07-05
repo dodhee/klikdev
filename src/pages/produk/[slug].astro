@@ -8,6 +8,8 @@ import ProductSchema from "@/components/ProductSchema.astro";
 import BreadcrumbListSchema from "@/components/BreadcrumbListSchema.astro";
 import FAQPageSchema from "@/components/FAQPageSchema.astro";
 import AggregateRatingSchema from "@/components/AggregateRatingSchema.astro";
+import ReviewSchema from "@/components/ReviewSchema.astro";
+import HowToSchema from "@/components/HowToSchema.astro";
 import TestimonialList from "@/components/TestimonialList.astro";
 import RelatedProducts from "@/components/RelatedProducts.astro";
 import { getRelativeLocaleUrl } from "astro:i18n";
@@ -81,6 +83,34 @@ const faqs = [
     answer: "Ya, semua fungsi publik ada JSDoc-nya. Buka di Apps Script Editor untuk lihat intellisense."
   }
 ];
+
+// HowTo steps untuk deploy (generic steps)
+const deploySteps = [
+  {
+    name: "Install Google Clasp CLI",
+    text: "Install @google/clasp secara global menggunakan npm. Pastikan Node.js sudah terinstal di sistem Anda."
+  },
+  {
+    name: "Login ke Google Account",
+    text: "Jalankan 'clasp login' di terminal untuk autentikasi dengan Google Account yang akan digunakan untuk deployment."
+  },
+  {
+    name: "Clone atau Download Script",
+    text: "Download source code dari repository dan extract ke folder lokal Anda."
+  },
+  {
+    name: "Setup Clasp Project",
+    text: "Buat file .clasp.json dengan scriptId dari Apps Script project Anda. Atau gunakan 'clasp create' untuk project baru."
+  },
+  {
+    name: "Push Script ke Apps Script",
+    text: "Jalankan 'clasp push' untuk upload semua file ke Google Apps Script project Anda."
+  },
+  {
+    name: "Setup Trigger dan Permissions",
+    text: "Buka Apps Script Editor, setup trigger sesuai kebutuhan, dan authorize permissions yang diperlukan."
+  }
+];
 ---
 
 <Layout
@@ -116,6 +146,23 @@ const faqs = [
         ratingCount={aggregateRating.ratingCount}
       />
     )}
+
+    {/* Individual Review Schema - tampil jika ada testimonials */}
+    {testimonials.length > 0 && (
+      <ReviewSchema
+        reviews={testimonials}
+        itemName={data.title}
+        itemUrl={Astro.url.href}
+      />
+    )}
+
+    {/* HowTo Schema - panduan deploy */}
+    <HowToSchema
+      name={`Cara Deploy ${data.title}`}
+      description={`Panduan langkah demi langkah untuk deploy ${data.title} menggunakan Google Clasp CLI`}
+      totalTime="PT15M"
+      steps={deploySteps}
+    />
   </Fragment>
 
   <Header />

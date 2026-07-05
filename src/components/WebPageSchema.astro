@@ -1,0 +1,53 @@
+---
+interface Props {
+  name: string;
+  description: string;
+  url: string;
+  breadcrumbItems?: Array<{ name: string; url: string }>;
+}
+
+const { name, description, url, breadcrumbItems } = Astro.props;
+
+/**
+ * Generate WebPage schema untuk halaman umum
+ * 
+ * CARA KERJA:
+ * - Basic WebPage markup untuk halaman non-product
+ * - Include breadcrumb jika ada
+ * - Cocok untuk: About, Search, Katalog, Blog posts
+ * 
+ * SEO BENEFIT:
+ * - Help Google understand page hierarchy
+ * - Better indexing untuk non-commercial pages
+ * - Breadcrumb display di SERP
+ */
+
+const webPageSchema: any = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  "name": name,
+  "description": description,
+  "url": url,
+  "inLanguage": "id-ID",
+  "isPartOf": {
+    "@type": "WebSite",
+    "name": "KlikDev",
+    "url": "https://klikdev.my.id"
+  }
+};
+
+// Add breadcrumb if provided
+if (breadcrumbItems && breadcrumbItems.length > 0) {
+  webPageSchema.breadcrumb = {
+    "@type": "BreadcrumbList",
+    "itemListElement": breadcrumbItems.map((item, index) => ({
+      "@type": "ListItem",
+      "position": index + 1,
+      "name": item.name,
+      "item": item.url
+    }))
+  };
+}
+---
+
+<script type="application/ld+json" is:inline set:html={JSON.stringify(webPageSchema)}></script>
