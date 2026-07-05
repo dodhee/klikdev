@@ -251,26 +251,3 @@ Script ini **sudah production-ready**, tapi tetap butuh update berkala (misalnya
 ---
 
 **Engineered by Dody (mbah)** - Bukan sekadar kode, tapi arsitektur yang bekerja.
-
-export const faqs = [
-  {
-    question: "Apakah bisa diintegrasikan dengan database eksternal seperti MySQL atau Firebase?",
-    answer: "Ya, tapi perlu custom code. Script ini by default hanya berinteraksi dengan Google Sheets. Jika butuh integrasi ke MySQL, PostgreSQL, atau Firebase, itu termasuk kategori Done-For-You (DFY) karena perlu setup server, authentication, dan error handling yang lebih kompleks."
-  },
-  {
-    question: "Berapa batas data yang bisa dihandle oleh script ini?",
-    answer: "Google Apps Script punya quota 6 menit execution time per trigger. Untuk data di bawah 5,000 rows, script ini berjalan lancar. Untuk data 10,000+ rows, saya sarankan pakai batch processing (tidak include di script standar, perlu custom)."
-  },
-  {
-    question: "Apakah aman untuk multi-user collaboration?",
-    answer: "Ya, script ini aman untuk multi-user. Setiap action tercatat dengan email user yang melakukan perubahan, timestamp perubahan, cell yang diubah, dan nilai lama serta nilai baru."
-  },
-  {
-    question: "Bagaimana cara update script jika ada bug atau fitur baru?",
-    answer: "Sangat mudah: Pull update dari repo (git pull origin main), build ulang (npm run build), push ke Apps Script (clasp push). Trigger tidak perlu di-setup ulang karena masih aktif."
-  },
-  {
-    question: "Apakah ada dokumentasi API untuk developer?",
-    answer: "Ya, semua fungsi publik ada JSDoc comment-nya. Buka file di Apps Script Editor, hover di function name untuk lihat intellisense dengan dokumentasi lengkap (parameter, return value, contoh usage)."
-  }
-];
