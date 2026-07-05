@@ -12,10 +12,12 @@ import ReviewSchema from "@/components/ReviewSchema.astro";
 import HowToSchema from "@/components/HowToSchema.astro";
 import TestimonialList from "@/components/TestimonialList.astro";
 import RelatedProducts from "@/components/RelatedProducts.astro";
+import RelatedArticles from "@/components/RelatedArticles.astro";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import config from "@/config";
 import { getTestimonialsByProduct } from "@/data/testimonials";
 import { calculateAggregateRating } from "@/data/testimonials/schema";
+import { extractFAQsFromMDX } from "@/utils/extractFAQs";
 
 export async function getStaticPaths() {
   const produkCollection = await getCollection("produk");
@@ -44,6 +46,9 @@ const aggregateRating = calculateAggregateRating(testimonials);
 // Load all products untuk related products
 const allProducts = await getCollection("produk");
 
+// Load all posts untuk related articles
+const allPosts = await getCollection("posts");
+
 // Breadcrumb data
 const breadcrumbs = [
   { label: "Home", url: getRelativeLocaleUrl(locale, "") },
@@ -60,29 +65,8 @@ const tabs = [
   { id: "faq", label: "FAQ" },
 ];
 
-// FAQ data untuk schema
-const faqs = [
-  {
-    question: "Apakah bisa diintegrasikan dengan database eksternal?",
-    answer: "Ya, tapi perlu custom. Script ini by default hanya berinteraksi dengan Google Sheets. Jika butuh integrasi ke MySQL/PostgreSQL/Firebase, itu masuk kategori DFY (Done-For-You)."
-  },
-  {
-    question: "Berapa batas data yang bisa dihandle?",
-    answer: "Google Apps Script punya quota 6 menit execution time per trigger. Untuk data >10,000 rows, saya sarankan pakai batch processing (tidak include di script ini, perlu custom)."
-  },
-  {
-    question: "Apakah mendukung multi-user collaboration?",
-    answer: "Ya, script ini aman untuk multi-user. Setiap action tercatat dengan email user yang melakukan perubahan."
-  },
-  {
-    question: "Bagaimana cara update script jika ada bug?",
-    answer: "Pull update dari repo, lalu clasp push lagi. Trigger tidak perlu di-setup ulang."
-  },
-  {
-    question: "Apakah ada dokumentasi API?",
-    answer: "Ya, semua fungsi publik ada JSDoc-nya. Buka di Apps Script Editor untuk lihat intellisense."
-  }
-];
+// Extract FAQs from MDX content
+const faqs = extractFAQsFromMDX(produk.body || "");
 
 // HowTo steps untuk deploy (generic steps)
 const deploySteps = [
@@ -116,7 +100,7 @@ const deploySteps = [
 <Layout
   title={data.title}
   description={data.description}
-  ogImage={typeof data.thumbnail === "string" ? data.thumbnail : undefined}
+  ogImage={typeof data.thumbnail === "string" ? data.thumbnail : data.thumbnail?.src}
   ogType="product"
   productPrice={data.harga}
   productCurrency="IDR"
@@ -325,6 +309,15 @@ const deploySteps = [
     productSlug={produk.id}
     productTitle={data.title}
     whatsappNumber="6281234796567"
+  />
+
+  <!-- Related Articles Section -->
+  <RelatedArticles
+    currentProductId={produk.id}
+    currentCategory={data.kategori}
+    currentStack={data.stack}
+    allPosts={allPosts}
+    maxArticles={3}
   />
 
   <!-- Related Products Section -->

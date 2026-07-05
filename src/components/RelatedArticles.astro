@@ -1,0 +1,103 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import config from "@/config";
+
+type Props = {
+  currentProductId: string;
+  currentStack: string[];
+  currentCategory: string;
+  allPosts: CollectionEntry<"posts">[];
+  maxArticles?: number;
+};
+
+const {
+  currentProductId,
+  currentStack,
+  currentCategory,
+  allPosts,
+  maxArticles = 3,
+} = Astro.props;
+
+const locale = Astro.currentLocale ?? config.site.lang;
+
+// Manual curated mapping: product slug → blog post slug
+const curatedMapping: Record<string, string[]> = {
+  "google-sheets-automation-engine-optimized": [
+    "cara-deploy-google-apps-script-dengan-clasp",
+  ],
+  "google-sheets-watchdog-premium": [
+    "cara-deploy-google-apps-script-dengan-clasp",
+  ],
+  "gemini-prompt-library": [],
+};
+
+// Get curated articles first
+const curatedSlugs = curatedMapping[currentProductId] || [];
+const curatedArticles = allPosts.filter((post) =>
+  curatedSlugs.includes(post.id)
+);
+
+// Get additional articles based on tags
+const additionalArticles = allPosts
+  .filter(
+    (post) =>
+      !curatedSlugs.includes(post.id) && // Not already curated
+      !post.data.draft && // Not draft
+      post.data.tags?.some(
+        (tag) =>
+          currentStack.some((tech) =>
+            tag.toLowerCase().includes(tech.toLowerCase())
+          ) ||
+          tag.toLowerCase().includes(currentCategory.toLowerCase())
+      )
+  )
+  .slice(0, maxArticles - curatedArticles.length);
+
+const relatedArticles = [...curatedArticles, ...additionalArticles].slice(
+  0,
+  maxArticles
+);
+---
+
+{relatedArticles.length > 0 && (
+  <section class="border-border border-t pt-8 mt-8">
+    <h2 class="text-2xl font-bold mb-4">Artikel Terkait</h2>
+    <p class="text-muted-foreground mb-6">
+      Pelajari lebih lanjut tentang teknologi yang digunakan dalam produk ini
+    </p>
+    
+    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {relatedArticles.map((post) => {
+        const postUrl = getRelativeLocaleUrl(
+          locale,
+          `posts/${post.id}`
+        );
+        
+        return (
+          <a
+            href={postUrl}
+            class="bg-card border-border hover:border-mbah-accent group block rounded-lg border p-4 transition-colors"
+          >
+            <h3 class="text-foreground group-hover:text-mbah-accent mb-2 font-semibold transition-colors">
+              {post.data.title}
+            </h3>
+            <p class="text-muted-foreground line-clamp-2 text-sm">
+              {post.data.description}
+            </p>
+            
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="mt-3 flex flex-wrap gap-1">
+                {post.data.tags.slice(0, 3).map((tag) => (
+                  <span class="bg-mbah-accent/10 text-mbah-accent font-signature rounded px-2 py-0.5 text-xs">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </a>
+        );
+      })}
+    </div>
+  </section>
+)}
