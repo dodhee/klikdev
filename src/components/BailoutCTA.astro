@@ -20,7 +20,7 @@ const utmParams = new URLSearchParams({
 });
 
 // Fallback linkDfy jika tidak provided
-const defaultDfyLink = "https://godev.id";
+const defaultDfyLink = "https://godev.biz.id";
 const baseLinkDfy = linkDfy || defaultDfyLink;
 const finalUrl = `${baseLinkDfy}${baseLinkDfy.includes("?") ? "&" : "?"}${utmParams.toString()}`;
 ---

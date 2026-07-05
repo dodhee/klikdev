@@ -6,7 +6,7 @@ export default defineAstroPaperConfig({
     title: "KlikDev",
     description: "Script siap pakai untuk otomasi bisnis dan development. Done-For-You services tersedia.",
     author: "dody [mbah]",
-    profile: "https://godev.id",
+    profile: "https://godev.biz.id",
     ogImage: "default-og.jpg",
     lang: "id",
     timezone: "Asia/Jakarta",

@@ -1,0 +1,278 @@
+---
+/**
+ * TestimonialForm - Form untuk submit testimoni via WhatsApp
+ * 
+ * CARA KERJA:
+ * 1. User isi form (nama, email, rating, testimoni)
+ * 2. Client-side validation
+ * 3. Generate WhatsApp URL dengan pre-filled message
+ * 4. Redirect ke WhatsApp
+ * 
+ * KELEBIHAN:
+ * - Tidak butuh backend
+ * - Anti-spam (butuh WhatsApp aktif)
+ * - Anda kontrol approval
+ * 
+ * KEKURANGAN:
+ * - User harus punya WhatsApp
+ * - Semi-manual (Anda copy-paste ke JSON)
+ */
+
+interface Props {
+  productSlug: string;
+  productTitle: string;
+  whatsappNumber?: string; // Format: 628123456789 (tanpa +)
+}
+
+const { 
+  productSlug, 
+  productTitle,
+  whatsappNumber = "6281234567890" // Ganti dengan nomor WhatsApp Anda
+} = Astro.props;
+---
+
+<div class="bg-card border-border rounded-lg border p-6" id="testimonial-form-container">
+  <h3 class="text-foreground mb-4 text-xl font-semibold">
+    Tulis Review Anda
+  </h3>
+  <p class="text-muted-foreground mb-6 text-sm">
+    Share pengalaman Anda menggunakan produk ini. Review akan dikirim ke WhatsApp kami untuk verifikasi.
+  </p>
+
+  <form id="testimonial-form" class="space-y-4">
+    <!-- Nama -->
+    <div>
+      <label for="reviewer-name" class="text-foreground mb-2 block text-sm font-medium">
+        Nama Lengkap <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="text"
+        id="reviewer-name"
+        name="name"
+        required
+        minlength="3"
+        maxlength="50"
+        placeholder="Contoh: Budi Santoso"
+        class="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-mbah-accent focus:ring-mbah-accent w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2"
+      />
+      <p class="text-muted-foreground mt-1 text-xs">Nama akan ditampilkan di review</p>
+    </div>
+
+    <!-- Email -->
+    <div>
+      <label for="reviewer-email" class="text-foreground mb-2 block text-sm font-medium">
+        Email <span class="text-red-500">*</span>
+      </label>
+      <input
+        type="email"
+        id="reviewer-email"
+        name="email"
+        required
+        placeholder="contoh@email.com"
+        class="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-mbah-accent focus:ring-mbah-accent w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2"
+      />
+      <p class="text-muted-foreground mt-1 text-xs">Untuk verifikasi pembelian (tidak ditampilkan publik)</p>
+    </div>
+
+    <!-- Jabatan/Perusahaan (Optional) -->
+    <div>
+      <label for="reviewer-role" class="text-foreground mb-2 block text-sm font-medium">
+        Jabatan/Perusahaan (Opsional)
+      </label>
+      <input
+        type="text"
+        id="reviewer-role"
+        name="role"
+        maxlength="100"
+        placeholder="Contoh: IT Manager, PT Maju Jaya"
+        class="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-mbah-accent focus:ring-mbah-accent w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2"
+      />
+    </div>
+
+    <!-- Rating -->
+    <div>
+      <label class="text-foreground mb-2 block text-sm font-medium">
+        Rating <span class="text-red-500">*</span>
+      </label>
+      <div class="flex items-center gap-2">
+        <div id="star-rating" class="flex gap-1" role="radiogroup" aria-label="Rating">
+          {[1, 2, 3, 4, 5].map(star => (
+            <button
+              type="button"
+              data-rating={star}
+              class="star-button transition-colors hover:scale-110"
+              aria-label={`${star} bintang`}
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                class="text-muted-foreground h-8 w-8"
+              >
+                <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+              </svg>
+            </button>
+          ))}
+        </div>
+        <span id="rating-label" class="text-muted-foreground text-sm">Pilih rating</span>
+      </div>
+      <input type="hidden" id="rating-input" name="rating" required />
+    </div>
+
+    <!-- Testimoni -->
+    <div>
+      <label for="testimonial-content" class="text-foreground mb-2 block text-sm font-medium">
+        Testimoni <span class="text-red-500">*</span>
+      </label>
+      <textarea
+        id="testimonial-content"
+        name="content"
+        required
+        minlength="20"
+        maxlength="500"
+        rows="5"
+        placeholder="Ceritakan pengalaman Anda menggunakan produk ini... (minimal 20 karakter)"
+        class="bg-background border-border text-foreground placeholder:text-muted-foreground focus:border-mbah-accent focus:ring-mbah-accent w-full rounded-lg border px-4 py-2 focus:outline-none focus:ring-2"
+      ></textarea>
+      <p class="text-muted-foreground mt-1 text-xs">
+        <span id="char-count">0</span>/500 karakter
+      </p>
+    </div>
+
+    <!-- Submit Button -->
+    <button
+      type="submit"
+      class="bg-mbah-accent hover:bg-mbah-accent-hover flex w-full items-center justify-center gap-2 rounded-lg px-6 py-3 font-semibold text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="20"
+        height="20"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <path d="m3 21 1.65-3.8a9 9 0 1 1 3.4 2.9z"></path>
+        <path d="M9 10a.5.5 0 0 0 1 0V9a.5.5 0 0 0-1 0v1a5 5 0 0 0 5 5h1a.5.5 0 0 0 0-1h-1a.5.5 0 0 0 0 1"></path>
+      </svg>
+      Kirim via WhatsApp
+    </button>
+
+    <p class="text-muted-foreground text-center text-xs">
+      Review akan dikirim ke WhatsApp kami untuk verifikasi. Proses approval biasanya 1-2 hari kerja.
+    </p>
+  </form>
+</div>
+
+<script define:vars={{ productSlug, productTitle, whatsappNumber }}>
+  // Star rating interaction
+  const starButtons = document.querySelectorAll('.star-button');
+  const ratingInput = document.getElementById('rating-input');
+  const ratingLabel = document.getElementById('rating-label');
+  let selectedRating = 0;
+
+  starButtons.forEach(button => {
+    button.addEventListener('click', () => {
+      selectedRating = parseInt(button.dataset.rating);
+      ratingInput.value = selectedRating;
+      ratingLabel.textContent = `${selectedRating} bintang`;
+
+      // Update visual
+      starButtons.forEach((btn, index) => {
+        const svg = btn.querySelector('svg');
+        if (index < selectedRating) {
+          svg.setAttribute('fill', 'currentColor');
+          svg.classList.remove('text-muted-foreground');
+          svg.classList.add('text-yellow-500');
+        } else {
+          svg.setAttribute('fill', 'none');
+          svg.classList.add('text-muted-foreground');
+          svg.classList.remove('text-yellow-500');
+        }
+      });
+    });
+  });
+
+  // Character counter
+  const textarea = document.getElementById('testimonial-content');
+  const charCount = document.getElementById('char-count');
+  
+  textarea.addEventListener('input', () => {
+    charCount.textContent = textarea.value.length;
+  });
+
+  // Form submission
+  const form = document.getElementById('testimonial-form');
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    // Validate rating
+    if (!selectedRating) {
+      alert('Mohon pilih rating bintang terlebih dahulu.');
+      return;
+    }
+
+    // Get form data
+    const formData = new FormData(form);
+    const name = formData.get('name');
+    const email = formData.get('email');
+    const role = formData.get('role') || '-';
+    const rating = selectedRating;
+    const content = formData.get('content');
+
+    // Generate WhatsApp message
+    const message = `*REVIEW BARU - ${productTitle}*
+
+*Nama:* ${name}
+*Email:* ${email}
+*Jabatan/Perusahaan:* ${role}
+*Rating:* ${'⭐'.repeat(rating)} (${rating}/5)
+*Product Slug:* ${productSlug}
+
+*Testimoni:*
+${content}
+
+---
+_Mohon review dan approve untuk publish di website._`;
+
+    // Encode message for WhatsApp URL
+    const encodedMessage = encodeURIComponent(message);
+    const whatsappURL = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+
+    // Open WhatsApp
+    window.open(whatsappURL, '_blank');
+
+    // Show success message
+    alert('Terima kasih! Anda akan diarahkan ke WhatsApp. Silakan klik Send untuk mengirim review Anda.');
+
+    // Optional: Reset form
+    // form.reset();
+    // selectedRating = 0;
+    // charCount.textContent = '0';
+  });
+
+  // Re-init on Astro page transitions
+  document.addEventListener('astro:after-swap', () => {
+    // Re-run initialization if needed
+  });
+</script>
+
+<style>
+  .star-button {
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  .star-button:hover {
+    transform: scale(1.1);
+  }
+
+  .star-button:active {
+    transform: scale(0.95);
+  }
+</style>

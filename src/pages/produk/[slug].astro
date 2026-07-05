@@ -7,8 +7,12 @@ import BailoutCTA from "@/components/BailoutCTA.astro";
 import ProductSchema from "@/components/ProductSchema.astro";
 import BreadcrumbListSchema from "@/components/BreadcrumbListSchema.astro";
 import FAQPageSchema from "@/components/FAQPageSchema.astro";
+import AggregateRatingSchema from "@/components/AggregateRatingSchema.astro";
+import TestimonialList from "@/components/TestimonialList.astro";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import config from "@/config";
+import { getTestimonialsByProduct } from "@/data/testimonials";
+import { calculateAggregateRating } from "@/data/testimonials/schema";
 
 export async function getStaticPaths() {
   const produkCollection = await getCollection("produk");
@@ -29,6 +33,10 @@ const { data } = produk;
 const { Content } = await render(produk);
 
 const locale = Astro.currentLocale ?? config.site.lang;
+
+// Load testimonials untuk produk ini
+const testimonials = getTestimonialsByProduct(produk.id);
+const aggregateRating = calculateAggregateRating(testimonials);
 
 // Breadcrumb data
 const breadcrumbs = [
@@ -94,6 +102,16 @@ const faqs = [
     <BreadcrumbListSchema items={breadcrumbs} />
     
     <FAQPageSchema faqs={faqs} />
+
+    {/* AggregateRating Schema - hanya tampil jika ada review */}
+    {aggregateRating && (
+      <AggregateRatingSchema
+        itemName={data.title}
+        itemUrl={Astro.url.href}
+        ratingValue={aggregateRating.averageRating}
+        ratingCount={aggregateRating.ratingCount}
+      />
+    )}
   </Fragment>
 
   <Header />
@@ -250,13 +268,21 @@ const faqs = [
     <Content />
   </article>
 
+  <!-- Testimonials Section -->
+  <TestimonialList 
+    testimonials={testimonials}
+    productSlug={produk.id}
+    productTitle={data.title}
+    whatsappNumber="6281234796567"
+  />
+
   <!-- Bail-out Alert Box (Footer) -->
   <section class="border-border border-t pt-8">
-    <div class="bg-mbah-accent/5 border-mbah-accent rounded-lg border-l-4 p-6">
-      <h3 class="text-foreground mb-2 text-xl font-semibold">
+    <div class="bg-mbah-accent rounded-lg border-l-4 border-mbah-accent-hover p-6">
+      <h3 class="text-white mb-2 text-xl font-semibold">
         Butuh yang Skala Enterprise?
       </h3>
-      <p class="text-muted-foreground mb-4">
+      <p class="text-white mb-4">
         Script ini murni untuk DIY. Jika butuh di-custom penuh, saya (Dody/mbah)
         mengerjakannya secara Done-For-You.
       </p>
@@ -264,7 +290,7 @@ const faqs = [
         href={data.linkDfy}
         target="_blank"
         rel="noopener noreferrer"
-        class="hover:bg-mbah-accent-hover border-mbah-accent hover:border-mbah-accent-hover hover:text-mbah-accent-hover inline-flex items-center gap-2 rounded-lg border-2 px-6 py-3 font-semibold text-mbah-accent transition-colors"
+        class="bg-white hover:bg-gray-100 text-mbah-accent inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold transition-colors"
       >
         Lihat Layanan DFY Saya →
       </a>
@@ -322,6 +348,3 @@ const faqs = [
   initTabNavigation();
   document.addEventListener("astro:after-swap", initTabNavigation);
 </script>
----
-
-```

@@ -1,0 +1,227 @@
+---
+import type { Testimonial } from "@/data/testimonials/schema";
+import { calculateAggregateRating } from "@/data/testimonials/schema";
+import TestimonialCard from "./TestimonialCard.astro";
+import TestimonialForm from "./TestimonialForm.astro";
+
+interface Props {
+  testimonials: Testimonial[];
+  showStats?: boolean;
+  productSlug: string;
+  productTitle: string;
+  whatsappNumber?: string;
+}
+
+const { 
+  testimonials, 
+  showStats = true,
+  productSlug,
+  productTitle,
+  whatsappNumber
+} = Astro.props;
+const stats = calculateAggregateRating(testimonials);
+const hasTestimonials = testimonials.length > 0;
+---
+
+    <section class="border-border border-t py-8">
+      <div class="mb-6 flex items-start justify-between gap-4">
+        <div>
+          <h2 class="text-foreground mb-2 text-2xl font-bold">
+            Customer Reviews
+          </h2>
+          <p class="text-muted-foreground">
+            {hasTestimonials 
+              ? "Testimoni dari pembeli yang sudah menggunakan produk ini"
+              : "Belum ada review. Jadilah yang pertama memberikan testimoni!"}
+          </p>
+        </div>
+        <button
+          id="toggle-review-form"
+          class="bg-mbah-accent hover:bg-mbah-accent-hover flex items-center gap-2 whitespace-nowrap rounded-lg px-4 py-2 text-sm font-semibold text-white transition-colors"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M12 5v14M5 12h14"></path>
+          </svg>
+          Tulis Review
+        </button>
+      </div>
+
+      {/* Testimonial Form - Hidden by default */}
+      <div id="review-form-wrapper" class="mb-8 hidden">
+        <TestimonialForm 
+          productSlug={productSlug} 
+          productTitle={productTitle}
+          whatsappNumber={whatsappNumber}
+        />
+      </div>
+
+      {/* Aggregate Rating Stats - Only show if there are testimonials */}
+      {hasTestimonials && showStats && stats && (
+        <div class="bg-card border-border mb-8 rounded-lg border p-6">
+          <div class="grid gap-6 md:grid-cols-2">
+            {/* Average Rating */}
+            <div class="flex items-center gap-4">
+              <div class="text-center">
+                <div class="text-mbah-accent text-5xl font-bold">
+                  {stats.averageRating.toFixed(1)}
+                </div>
+                <div class="text-muted-foreground mt-1 text-sm">
+                  dari 5 bintang
+                </div>
+              </div>
+              <div class="flex-1">
+                <div class="mb-2 flex items-center gap-1">
+                  {Array.from({ length: 5 }, (_, i) => (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      viewBox="0 0 24 24"
+                      fill={i < Math.round(stats.averageRating) ? "currentColor" : "none"}
+                      stroke="currentColor"
+                      stroke-width="2"
+                      class:list={[
+                        "h-6 w-6",
+                        i < Math.round(stats.averageRating)
+                          ? "text-yellow-500"
+                          : "text-muted-foreground",
+                      ]}
+                    >
+                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                    </svg>
+                  ))}
+                </div>
+                <p class="text-muted-foreground text-sm">
+                  Berdasarkan {stats.ratingCount} review{stats.ratingCount > 1 ? "s" : ""}
+                </p>
+              </div>
+            </div>
+
+            {/* Rating Distribution */}
+            <div class="space-y-2">
+              {stats.ratingDistribution.reverse().map(dist => {
+                const percentage =
+                  stats.ratingCount > 0
+                    ? (dist.count / stats.ratingCount) * 100
+                    : 0;
+                return (
+                  <div class="flex items-center gap-3">
+                    <span class="text-muted-foreground w-8 text-sm">
+                      {dist.star} ★
+                    </span>
+                    <div class="bg-muted h-2 flex-1 overflow-hidden rounded-full">
+                      <div
+                        class="bg-yellow-500 h-full transition-all"
+                        style={`width: ${percentage}%`}
+                      />
+                    </div>
+                    <span class="text-muted-foreground w-12 text-right text-sm">
+                      {dist.count}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Testimonial Cards Grid or Empty State */}
+      {hasTestimonials ? (
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {testimonials.map(testimonial => (
+            <TestimonialCard testimonial={testimonial} />
+          ))}
+        </div>
+      ) : (
+        <div class="bg-muted/50 border-border rounded-lg border border-dashed p-12 text-center">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="48"
+            height="48"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="text-muted-foreground mx-auto mb-4"
+          >
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+          </svg>
+          <h3 class="text-foreground mb-2 text-lg font-semibold">
+            Belum Ada Review
+          </h3>
+          <p class="text-muted-foreground mb-4">
+            Produk ini belum memiliki review dari pembeli. Bantu pembeli lain dengan berbagi pengalaman Anda!
+          </p>
+          <button
+            class="bg-mbah-accent hover:bg-mbah-accent-hover inline-flex items-center gap-2 rounded-lg px-6 py-3 font-semibold text-white transition-colors"
+            onclick="document.getElementById('toggle-review-form')?.click()"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="20"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            Tulis Review Pertama
+          </button>
+        </div>
+      )}
+</section>
+
+<script>
+  // Toggle review form
+  function initReviewFormToggle() {
+    const toggleButton = document.getElementById('toggle-review-form');
+    const formWrapper = document.getElementById('review-form-wrapper');
+
+    if (toggleButton && formWrapper) {
+      toggleButton.addEventListener('click', () => {
+        const isHidden = formWrapper.classList.contains('hidden');
+        
+        if (isHidden) {
+          formWrapper.classList.remove('hidden');
+          toggleButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M18 6L6 18M6 6l12 12"></path>
+            </svg>
+            Tutup Form
+          `;
+          // Smooth scroll to form
+          formWrapper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        } else {
+          formWrapper.classList.add('hidden');
+          toggleButton.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 5v14M5 12h14"></path>
+            </svg>
+            Tulis Review
+          `;
+        }
+      });
+    }
+  }
+
+  // Init on page load
+  initReviewFormToggle();
+
+  // Re-init on Astro page transitions
+  document.addEventListener('astro:after-swap', initReviewFormToggle);
+</script>

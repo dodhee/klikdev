@@ -1,0 +1,52 @@
+---
+/**
+ * AggregateRating Schema (JSON-LD)
+ * 
+ * Menampilkan rating agregat di Google Search Results
+ * Ref: https://schema.org/AggregateRating
+ * 
+ * KELEBIHAN:
+ * - Muncul bintang di Google Search
+ * - Meningkatkan CTR
+ * - Membangun trust
+ * 
+ * KEKURANGAN:
+ * - Harus ada minimal 1 review verified
+ * - Google bisa reject jika review fake
+ */
+
+interface Props {
+  itemName: string;
+  itemUrl: string;
+  ratingValue: number;
+  ratingCount: number;
+  bestRating?: number;
+  worstRating?: number;
+}
+
+const {
+  itemName,
+  itemUrl,
+  ratingValue,
+  ratingCount,
+  bestRating = 5,
+  worstRating = 1,
+} = Astro.props;
+
+// Schema JSON-LD
+const schema = {
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": itemName,
+  "url": itemUrl,
+  "aggregateRating": {
+    "@type": "AggregateRating",
+    "ratingValue": ratingValue.toFixed(1),
+    "reviewCount": ratingCount,
+    "bestRating": bestRating,
+    "worstRating": worstRating,
+  },
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)} />

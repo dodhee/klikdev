@@ -227,5 +227,5 @@ Ya, asalkan semua anggota tim punya akses Editor ke Apps Script project yang sam
 
 ---
 
-**Butuh bantuan setup yang lebih kompleks?** Saya (mbah) bisa kerjakan secara Done-For-You, termasuk CI/CD pipeline, testing, dan monitoring. [Lihat layanan DFY →](https://godev.id/dfy?utm_source=klikdev&utm_medium=blog&utm_campaign=clasp-tutorial)
+**Butuh bantuan setup yang lebih kompleks?** Saya (mbah) bisa kerjakan secara Done-For-You, termasuk CI/CD pipeline, testing, dan monitoring. [Lihat layanan DFY →](https://godev.biz.id/dfy?utm_source=klikdev&utm_medium=blog&utm_campaign=clasp-tutorial)
 </content>
