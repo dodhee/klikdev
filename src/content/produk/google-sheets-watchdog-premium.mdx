@@ -36,7 +36,7 @@ Jika Anda mengelola Google Sheets untuk operasional bisnis, kemungkinan besar An
 
 Watchdog mengubah Google Sheets dari "data pasif" menjadi "sistem aktif yang berbicara":
 
-- **Alert Real-time**: Notifikasi langsung ke WhatsApp/Email dalam <30 detik
+- **Alert Real-time**: Notifikasi langsung ke WhatsApp/Email dalam &lt;30 detik
 - **Anomaly Detection**: Otomatis deteksi perubahan yang tidak wajar (contoh: harga tiba-tiba turun 90%)
 - **Multi-Channel Notification**: Satu event, bisa trigger notifikasi ke 3 channel sekaligus
 - **Audit Trail**: Semua perubahan tercatat dengan detail: siapa, kapan, apa yang diubah
@@ -45,7 +45,7 @@ Watchdog mengubah Google Sheets dari "data pasif" menjadi "sistem aktif yang ber
 
 | Fitur | Google Sheets Watchdog | Zapier + Google Sheets | Manual Checking | Google Notification (Native) |
 |-------|------------------------|------------------------|-----------------|------------------------------|
-| **Real-time Alert** | ✅ <30 detik | ⚠️ 1-15 menit delay | ❌ Harus manual | ⚠️ Hanya email |
+| **Real-time Alert** | ✅ &lt;30 detik | ⚠️ 1-15 menit delay | ❌ Harus manual | ⚠️ Hanya email |
 | **Custom Logic** | ✅ Unlimited | ⚠️ Terbatas tier | ❌ - | ❌ Tidak ada |
 | **Multi-Channel** | ✅ WA, Email, Slack | ⚠️ Bayar per channel | ❌ - | ❌ Email only |
 | **Anomaly Detection** | ✅ Built-in | ❌ Harus custom | ❌ - | ❌ Tidak ada |
@@ -69,7 +69,7 @@ Watchdog mengubah Google Sheets dari "data pasif" menjadi "sistem aktif yang ber
 ### Flow Detail
 
 1. **Event Capture**: Setiap kali ada perubahan di Sheets, trigger `onEdit()` berjalan
-2. **Rule Engine**: Watchdog cek semua rule yang Anda define (contoh: "jika stok <10, alert ke procurement")
+2. **Rule Engine**: Watchdog cek semua rule yang Anda define (contoh: "jika stok &lt;10, alert ke procurement")
 3. **Data Validation**: Cek apakah data baru valid (format, range, business logic)
 4. **Notification Dispatch**: Kirim notifikasi ke channel yang ditentukan dengan template custom
 5. **Logging**: Catat semua event ke sheet log untuk audit
@@ -231,7 +231,7 @@ Ulangi untuk trigger lain jika perlu (`onChangeTrigger`, `onFormSubmit`).
 
 1. Buka Google Sheets yang dimonitor
 2. Edit cell yang memenuhi rule (contoh: masukkan deal value >50 juta)
-3. Cek notifikasi di WhatsApp/Email dalam <30 detik
+3. Cek notifikasi di WhatsApp/Email dalam &lt;30 detik
 4. Cek sheet "Activity Log" untuk melihat event tercatat
 
 ### Troubleshooting

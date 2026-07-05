@@ -7,7 +7,8 @@
   },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build && pagefind --site dist && xcopy /E /I /Y dist\\pagefind public\\pagefind",
+    "build": "astro build && pagefind --site dist",
+    "build:windows": "astro build && pagefind --site dist && xcopy /E /I /Y dist\\pagefind public\\pagefind",
     "preview": "astro preview",
     "sync": "astro sync",
     "astro": "astro",
