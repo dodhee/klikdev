@@ -39,6 +39,12 @@ const { produk } = Astro.props;
 const { data } = produk;
 const { Content } = await render(produk);
 
+// Type-safe access untuk field opsional
+const productData = data as typeof data & {
+  estimasiSetup?: string;
+  skillDibutuhkan?: string[];
+};
+
 const locale = Astro.currentLocale ?? config.site.lang;
 
 // Load testimonials untuk produk ini
@@ -277,11 +283,11 @@ const deploySteps = [
   </section>
 
   <!-- Time Calculator -->
-  {(data as any).estimasiSetup && (data as any).skillDibutuhkan && (
+  {productData.estimasiSetup && productData.skillDibutuhkan && (
   <section class="border-border border-b py-6">
     <TimeCalculator 
-      estimasiSetup={(data as any).estimasiSetup}
-      skillDibutuhkan={(data as any).skillDibutuhkan}
+      estimasiSetup={productData.estimasiSetup}
+      skillDibutuhkan={productData.skillDibutuhkan}
       slug={produk.id}
     />
   </section>
