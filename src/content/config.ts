@@ -19,6 +19,10 @@ const produkCollection = defineCollection({
       kategori: z.enum(["Google Apps Script", "AI Prompt", "Automation", "Web Development"]),
       thumbnail: image(),
 
+      // Fields untuk TimeCalculator component (FASE R3)
+      estimasiSetup: z.string().min(3).max(50), // contoh: "2-4 jam" atau "30 menit"
+      skillDibutuhkan: z.array(z.string()).min(1).max(5), // contoh: ["Git", "Apps Script API", "OAuth"]
+
       // Meta fields
       featured: z.boolean().default(false),
       draft: z.boolean().default(false),
