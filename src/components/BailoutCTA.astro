@@ -4,7 +4,7 @@
  * Menggunakan UTMHelper untuk konsistensi tracking
  */
 
-import { generateGodevUrl } from "@/utils/UTMHelper";
+import { generateGodevHargaUrl } from "@/utils/UTMHelper";
 
 interface Props {
   slug: string;
@@ -14,8 +14,8 @@ interface Props {
 
 const { slug, linkDfy, variant = "default" } = Astro.props;
 
-// Generate URL dengan UTM menggunakan UTMHelper
-const finalUrl = linkDfy || generateGodevUrl("bailout", slug);
+// ALWAYS generate URL ke halaman harga godev (ignore linkDfy dari frontmatter)
+const finalUrl = generateGodevHargaUrl("bailout", slug);
 ---
 
 {

@@ -13,7 +13,7 @@ const produkCollection = defineCollection({
       description: z.string().min(50).max(160),
       harga: z.number().int().positive().min(10000).max(10000000),
       linkBeli: z.string().url().startsWith("https://"),
-      linkDfy: z.string().url().startsWith("https://").optional(),
+      linkDfy: z.string().optional(), // DEPRECATED: semua CTA sekarang ke /harga/
       stack: z.array(z.string()).min(1).max(5),
       waktuDeploy: z.string().min(3),
       kategori: z.enum(["Google Apps Script", "AI Prompt", "Automation", "Web Development"]),

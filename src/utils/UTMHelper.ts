@@ -15,6 +15,7 @@
  */
 
 const GODEV_BASE_URL = "https://godev.biz.id";
+const GODEV_HARGA_URL = "https://godev.biz.id/harga";
 const UTM_SOURCE = "klikdev";
 
 /**
@@ -38,6 +39,27 @@ export function generateGodevUrl(
   }
 
   return `${GODEV_BASE_URL}?${params.toString()}`;
+}
+
+/**
+ * Generate URL godev halaman harga dengan UTM parameters
+ * Digunakan untuk CTA di halaman detail produk
+ * 
+ * @param medium - UTM medium (contoh: 'bailout', 'calculator', 'exit_popup')
+ * @param campaign - UTM campaign (slug produk)
+ * @returns Full URL ke halaman harga dengan UTM parameters
+ */
+export function generateGodevHargaUrl(
+  medium: string,
+  campaign: string
+): string {
+  const params = new URLSearchParams({
+    utm_source: UTM_SOURCE,
+    utm_medium: medium,
+    utm_campaign: campaign,
+  });
+
+  return `${GODEV_HARGA_URL}?${params.toString()}`;
 }
 
 /**

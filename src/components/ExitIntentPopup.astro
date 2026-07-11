@@ -13,7 +13,7 @@
  * - slug: string (untuk UTM campaign)
  */
 
-import { generateGodevUrl } from "@/utils/UTMHelper";
+import { generateGodevHargaUrl } from "@/utils/UTMHelper";
 
 interface Props {
   slug: string;
@@ -21,8 +21,8 @@ interface Props {
 
 const { slug } = Astro.props;
 
-// Generate URL godev dengan UTM
-const godevUrl = generateGodevUrl("exit_popup", slug);
+// Generate URL godev halaman harga dengan UTM
+const godevUrl = generateGodevHargaUrl("exit_popup", slug);
 ---
 
 <div

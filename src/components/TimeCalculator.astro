@@ -9,7 +9,7 @@
  * - slug: string (untuk UTM campaign)
  */
 
-import { generateGodevUrl } from "@/utils/UTMHelper";
+import { generateGodevHargaUrl } from "@/utils/UTMHelper";
 
 interface Props {
   estimasiSetup: string;
@@ -22,8 +22,8 @@ const { estimasiSetup, skillDibutuhkan, slug } = Astro.props;
 // Defensive check: skip render jika data tidak lengkap
 const hasValidData = estimasiSetup && skillDibutuhkan && Array.isArray(skillDibutuhkan) && skillDibutuhkan.length > 0;
 
-// Generate URL godev dengan UTM (hanya jika data valid)
-const godevUrl = hasValidData ? generateGodevUrl("calculator", slug) : "";
+// Generate URL godev halaman harga dengan UTM (hanya jika data valid)
+const godevUrl = hasValidData ? generateGodevHargaUrl("calculator", slug) : "";
 ---
 
 {hasValidData && (
