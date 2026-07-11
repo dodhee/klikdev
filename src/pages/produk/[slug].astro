@@ -39,13 +39,25 @@ const { produk } = Astro.props;
 const { data } = produk;
 const { Content } = await render(produk);
 
-// Type-safe access untuk field opsional
-const productData = data as typeof data & {
-  estimasiSetup?: string;
-  skillDibutuhkan?: string[];
+const locale = Astro.currentLocale ?? config.site.lang;
+
+// TimeCalculator data mapping (workaround untuk Astro TypeScript limitation)
+const timeCalculatorData: Record<string, { estimasiSetup: string; skillDibutuhkan: string[] }> = {
+  "google-sheets-automation-engine-optimized": {
+    estimasiSetup: "2-4 jam",
+    skillDibutuhkan: ["Git basics", "Node.js & npm", "Apps Script API", "CLI navigation"]
+  },
+  "google-sheets-watchdog-premium": {
+    estimasiSetup: "1-2 jam",
+    skillDibutuhkan: ["Google Sheets", "Apps Script basics", "Trigger setup"]
+  },
+  "gemini-prompt-library": {
+    estimasiSetup: "30 menit",
+    skillDibutuhkan: ["Copy-paste", "Basic prompting"]
+  }
 };
 
-const locale = Astro.currentLocale ?? config.site.lang;
+const calculatorData = timeCalculatorData[produk.id];
 
 // Load testimonials untuk produk ini
 const testimonials = getTestimonialsByProduct(produk.id);
@@ -283,11 +295,11 @@ const deploySteps = [
   </section>
 
   <!-- Time Calculator -->
-  {productData.estimasiSetup && productData.skillDibutuhkan && (
+  {calculatorData && (
   <section class="border-border border-b py-6">
     <TimeCalculator 
-      estimasiSetup={productData.estimasiSetup}
-      skillDibutuhkan={productData.skillDibutuhkan}
+      estimasiSetup={calculatorData.estimasiSetup}
+      skillDibutuhkan={calculatorData.skillDibutuhkan}
       slug={produk.id}
     />
   </section>
