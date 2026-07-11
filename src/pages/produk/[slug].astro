@@ -13,6 +13,8 @@ import HowToSchema from "@/components/HowToSchema.astro";
 import TestimonialList from "@/components/TestimonialList.astro";
 import RelatedProducts from "@/components/RelatedProducts.astro";
 import RelatedArticles from "@/components/RelatedArticles.astro";
+import TimeCalculator from "@/components/TimeCalculator.astro";
+import ExitIntentPopup from "@/components/ExitIntentPopup.astro";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import config from "@/config";
 import { getTestimonialsByProduct } from "@/data/testimonials";
@@ -274,6 +276,17 @@ const deploySteps = [
     </div>
   </section>
 
+  <!-- Time Calculator -->
+  {(data as any).estimasiSetup && (data as any).skillDibutuhkan && (
+  <section class="border-border border-b py-6">
+    <TimeCalculator 
+      estimasiSetup={(data as any).estimasiSetup}
+      skillDibutuhkan={(data as any).skillDibutuhkan}
+      slug={produk.id}
+    />
+  </section>
+  )}
+
   <!-- Tab Navigation -->
   <section class="border-border sticky top-0 z-10 border-b bg-background/80 backdrop-blur-sm">
     <nav class="app-layout overflow-x-auto">
@@ -352,6 +365,9 @@ const deploySteps = [
   </div>
   </main>
   <Footer />
+  
+  <!-- Exit Intent Popup -->
+  <ExitIntentPopup slug={produk.id} />
 </Layout>
 
 <script>

@@ -1,0 +1,216 @@
+---
+/**
+ * ExitIntentPopup.astro
+ * Popup yang muncul saat user akan meninggalkan halaman (exit intent)
+ * 
+ * Behavior:
+ * - Trigger: cursor keluar viewport dari atas (mouseleave event)
+ * - Hanya muncul 1x per session (localStorage)
+ * - HANYA di desktop (window.innerWidth > 768)
+ * - Close on: klik tombol, klik luar card, tekan ESC
+ * 
+ * Props:
+ * - slug: string (untuk UTM campaign)
+ */
+
+import { generateGodevUrl } from "@/utils/UTMHelper";
+
+interface Props {
+  slug: string;
+}
+
+const { slug } = Astro.props;
+
+// Generate URL godev dengan UTM
+const godevUrl = generateGodevUrl("exit_popup", slug);
+---
+
+<div
+  id="exit-intent-popup"
+  class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-sm"
+  role="dialog"
+  aria-modal="true"
+  aria-labelledby="popup-title"
+  data-popup-shown="false"
+>
+  <div
+    id="popup-card"
+    class="relative mx-4 w-full max-w-md rounded-lg bg-white dark:bg-gray-800 p-6 shadow-2xl"
+  >
+    <!-- Close Button (X) -->
+    <button
+      id="popup-close"
+      type="button"
+      class="absolute top-4 right-4 p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors duration-200"
+      aria-label="Tutup popup"
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        class="h-5 w-5 text-gray-500 dark:text-gray-400"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M6 18L18 6M6 6l12 12"></path>
+      </svg>
+    </button>
+
+    <!-- Content -->
+    <div class="text-center">
+      <h2
+        id="popup-title"
+        class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-3"
+      >
+        Tunggu! Jangan pergi dulu.
+      </h2>
+      <p class="text-gray-600 dark:text-gray-300 mb-6">
+        Kalau setup sendiri terlalu ribet, saya bisa kerjakan untuk Anda. Hemat
+        waktu berjam-jam.
+      </p>
+
+      <!-- CTA Buttons -->
+      <div class="flex flex-col gap-3 sm:flex-row sm:justify-center">
+        <a
+          href={godevUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 px-6 py-3 bg-mbah-accent hover:bg-mbah-accent-hover text-white rounded-md font-medium transition-colors duration-200"
+          aria-label="Ke layanan Done-For-You di godev"
+        >
+          <span>Saya Kerjakan (DFY)</span>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class="h-4 w-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 5l7 7-7 7"></path>
+          </svg>
+        </a>
+        <button
+          id="popup-continue"
+          type="button"
+          class="px-6 py-3 border-2 border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500 text-gray-700 dark:text-gray-300 rounded-md font-medium transition-colors duration-200"
+        >
+          Lanjut Baca
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Client-side logic untuk exit intent detection
+  document.addEventListener("astro:page-load", () => {
+    const popup = document.getElementById("exit-intent-popup");
+    const popupCard = document.getElementById("popup-card");
+    const closeButton = document.getElementById("popup-close");
+    const continueButton = document.getElementById("popup-continue");
+
+    if (!popup || !popupCard || !closeButton || !continueButton) return;
+
+    // Cek apakah popup sudah pernah ditampilkan di session ini
+    const popupShown = sessionStorage.getItem("klikdev_exit_popup_shown");
+
+    // Cek apakah device adalah desktop
+    const isDesktop = window.innerWidth > 768;
+
+    if (popupShown === "true" || !isDesktop) {
+      // Jika sudah pernah ditampilkan atau bukan desktop, skip
+      return;
+    }
+
+    // Flag untuk prevent multiple triggers
+    let isPopupActive = false;
+
+    // Function untuk show popup
+    const showPopup = () => {
+      if (isPopupActive) return;
+
+      isPopupActive = true;
+      popup.classList.remove("hidden");
+      popup.classList.add("flex");
+      popup.setAttribute("data-popup-shown", "true");
+
+      // Simpan state di sessionStorage
+      sessionStorage.setItem("klikdev_exit_popup_shown", "true");
+
+      // Focus trap untuk accessibility
+      popupCard.focus();
+    };
+
+    // Function untuk hide popup
+    const hidePopup = () => {
+      popup.classList.add("hidden");
+      popup.classList.remove("flex");
+    };
+
+    // Exit intent detection: cursor keluar dari viewport atas
+    document.addEventListener("mouseout", (e) => {
+      // Cek apakah cursor keluar dari atas viewport
+      if (!e.relatedTarget && e.clientY < 10) {
+        showPopup();
+      }
+    });
+
+    // Close popup saat klik close button
+    closeButton.addEventListener("click", hidePopup);
+
+    // Close popup saat klik "Lanjut Baca"
+    continueButton.addEventListener("click", hidePopup);
+
+    // Close popup saat klik di luar card
+    popup.addEventListener("click", (e) => {
+      if (e.target === popup) {
+        hidePopup();
+      }
+    });
+
+    // Close popup saat tekan ESC
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape" && !popup.classList.contains("hidden")) {
+        hidePopup();
+      }
+    });
+  });
+</script>
+
+<style>
+  /* Smooth popup animation */
+  #exit-intent-popup {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  #popup-card {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(20px);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+</style>
