@@ -1,8 +1,10 @@
 ---
 /**
  * BailoutCTA - Tombol CTA untuk redirect ke layanan DFY di godev
- * Auto-generate UTM parameters berdasarkan slug produk
+ * Menggunakan UTMHelper untuk konsistensi tracking
  */
+
+import { generateGodevUrl } from "@/utils/UTMHelper";
 
 interface Props {
   slug: string;
@@ -12,17 +14,8 @@ interface Props {
 
 const { slug, linkDfy, variant = "default" } = Astro.props;
 
-// Generate UTM parameters otomatis
-const utmParams = new URLSearchParams({
-  utm_source: "klikdev",
-  utm_medium: "bailout",
-  utm_campaign: slug,
-});
-
-// Fallback linkDfy jika tidak provided
-const defaultDfyLink = "https://godev.biz.id";
-const baseLinkDfy = linkDfy || defaultDfyLink;
-const finalUrl = `${baseLinkDfy}${baseLinkDfy.includes("?") ? "&" : "?"}${utmParams.toString()}`;
+// Generate URL dengan UTM menggunakan UTMHelper
+const finalUrl = linkDfy || generateGodevUrl("bailout", slug);
 ---
 
 {
