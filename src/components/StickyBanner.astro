@@ -1,0 +1,146 @@
+---
+/**
+ * StickyBanner.astro
+ * Banner bailout yang sticky di bawah navbar, hanya muncul di halaman katalog
+ * 
+ * Behavior:
+ * - Muncul default saat load
+ * - User bisa close (simpan state di localStorage: 'banner_closed=true')
+ * - Jika sudah di-close, jangan muncul lagi di session yang sama
+ */
+
+import { generateGodevUrl } from "@/utils/UTMHelper";
+
+// Generate URL godev dengan UTM yang konsisten
+const godevUrl = generateGodevUrl("sticky_banner", "homepage");
+---
+
+<div
+  id="sticky-banner"
+  class="sticky top-0 z-40 bg-mbah-accent text-white shadow-md"
+  data-banner-visible="true"
+>
+  <div class="container mx-auto px-4 py-3">
+    <div class="flex items-center justify-between gap-4">
+      <!-- Content -->
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-semibold mb-1">
+          Pusing setup sendiri?
+        </p>
+        <p class="text-xs opacity-90">
+          Saya kerjakan terima beres. Anda tinggal pakai.
+        </p>
+      </div>
+
+      <!-- CTA Button -->
+      <a
+        href={godevUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 px-4 py-2 bg-white text-mbah-accent rounded-md text-sm font-medium hover:bg-gray-100 transition-colors duration-200 shrink-0"
+        aria-label="Ke layanan Done-For-You di godev"
+      >
+        <span>Ke godev</span>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-4 w-4"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+
+      <!-- Close Button -->
+      <button
+        id="close-banner"
+        type="button"
+        class="shrink-0 p-1 rounded-md hover:bg-mbah-accent-hover transition-colors duration-200"
+        aria-label="Tutup banner"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          class="h-5 w-5"
+          fill="none"
+          viewBox="0 0 24 24"
+          stroke="currentColor"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Client-side logic untuk handle close banner
+  document.addEventListener("DOMContentLoaded", () => {
+    const banner = document.getElementById("sticky-banner");
+    const closeButton = document.getElementById("close-banner");
+
+    if (!banner || !closeButton) return;
+
+    // Cek localStorage saat load
+    const isBannerClosed = localStorage.getItem("klikdev_banner_closed");
+
+    if (isBannerClosed === "true") {
+      // Jika sudah pernah di-close, hide banner
+      banner.style.display = "none";
+      banner.setAttribute("data-banner-visible", "false");
+    }
+
+    // Handle close button click
+    closeButton.addEventListener("click", () => {
+      // Hide banner dengan animasi
+      banner.style.transition = "opacity 0.3s ease-out";
+      banner.style.opacity = "0";
+
+      setTimeout(() => {
+        banner.style.display = "none";
+        banner.setAttribute("data-banner-visible", "false");
+      }, 300);
+
+      // Simpan state di localStorage
+      localStorage.setItem("klikdev_banner_closed", "true");
+    });
+  });
+</script>
+
+<style>
+  /* Ensure banner is always on top of navbar */
+  #sticky-banner {
+    position: sticky;
+    top: 0;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 640px) {
+    #sticky-banner {
+      padding-top: 0.5rem;
+      padding-bottom: 0.5rem;
+    }
+
+    #sticky-banner .container {
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+
+    #sticky-banner p:first-of-type {
+      font-size: 0.875rem;
+    }
+
+    #sticky-banner p:last-of-type {
+      font-size: 0.75rem;
+    }
+  }
+</style>
+</contents>
