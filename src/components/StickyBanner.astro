@@ -84,9 +84,9 @@ const godevUrl = generateGodevUrl("sticky_banner", "homepage");
   </div>
 </div>
 
-<script>
-  // Client-side logic untuk handle close banner
-  document.addEventListener("DOMContentLoaded", () => {
+<script is:inline>
+  // Script inlined agar berjalan langsung tanpa bundle
+  function initStickyBanner() {
     const banner = document.getElementById("sticky-banner");
     const closeButton = document.getElementById("close-banner");
 
@@ -96,14 +96,12 @@ const godevUrl = generateGodevUrl("sticky_banner", "homepage");
     const isBannerClosed = localStorage.getItem("klikdev_banner_closed");
 
     if (isBannerClosed === "true") {
-      // Jika sudah pernah di-close, hide banner
       banner.style.display = "none";
       banner.setAttribute("data-banner-visible", "false");
     }
 
     // Handle close button click
     closeButton.addEventListener("click", () => {
-      // Hide banner dengan animasi
       banner.style.transition = "opacity 0.3s ease-out";
       banner.style.opacity = "0";
 
@@ -112,10 +110,19 @@ const godevUrl = generateGodevUrl("sticky_banner", "homepage");
         banner.setAttribute("data-banner-visible", "false");
       }, 300);
 
-      // Simpan state di localStorage
       localStorage.setItem("klikdev_banner_closed", "true");
     });
-  });
+  }
+
+  // Jalankan saat DOM ready (selalu)
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initStickyBanner);
+  } else {
+    initStickyBanner();
+  }
+
+  // Jalankan ulang setelah View Transitions (astri:page-load)
+  document.addEventListener("astro:page-load", initStickyBanner);
 </script>
 
 <style>

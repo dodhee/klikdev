@@ -111,80 +111,64 @@ const godevUrl = generateGodevHargaUrl("exit_popup", slug);
   </div>
 </div>
 
-<script>
-  // Client-side logic untuk exit intent detection
-  document.addEventListener("astro:page-load", () => {
-    const popup = document.getElementById("exit-intent-popup");
-    const popupCard = document.getElementById("popup-card");
-    const closeButton = document.getElementById("popup-close");
-    const continueButton = document.getElementById("popup-continue");
+<script is:inline>
+  (function() {
+    // Singleton: skip jika sudah init
+    if (window.__exitPopupInit) return;
+    window.__exitPopupInit = true;
+
+    var popup = document.getElementById("exit-intent-popup");
+    var popupCard = document.getElementById("popup-card");
+    var closeButton = document.getElementById("popup-close");
+    var continueButton = document.getElementById("popup-continue");
 
     if (!popup || !popupCard || !closeButton || !continueButton) return;
 
-    // Cek apakah popup sudah pernah ditampilkan di session ini
-    const popupShown = sessionStorage.getItem("klikdev_exit_popup_shown");
+    // Cek session: sudah pernah muncul?
+    var popupShown = sessionStorage.getItem("klikdev_exit_popup_shown");
 
-    // Cek apakah device adalah desktop
-    const isDesktop = window.innerWidth > 768;
+    // Cek desktop
+    var isDesktop = window.innerWidth > 768;
 
-    if (popupShown === "true" || !isDesktop) {
-      // Jika sudah pernah ditampilkan atau bukan desktop, skip
-      return;
-    }
+    if (popupShown === "true" || !isDesktop) return;
 
-    // Flag untuk prevent multiple triggers
-    let isPopupActive = false;
+    var isPopupActive = false;
 
-    // Function untuk show popup
-    const showPopup = () => {
+    function showPopup() {
       if (isPopupActive) return;
-
       isPopupActive = true;
       popup.classList.remove("hidden");
       popup.classList.add("flex");
       popup.setAttribute("data-popup-shown", "true");
-
-      // Simpan state di sessionStorage
       sessionStorage.setItem("klikdev_exit_popup_shown", "true");
-
-      // Focus trap untuk accessibility
       popupCard.focus();
-    };
+    }
 
-    // Function untuk hide popup
-    const hidePopup = () => {
+    function hidePopup() {
       popup.classList.add("hidden");
       popup.classList.remove("flex");
-    };
+    }
 
-    // Exit intent detection: cursor keluar dari viewport atas
-    document.addEventListener("mouseout", (e) => {
-      // Cek apakah cursor keluar dari atas viewport
+    // Exit intent: cursor keluar dari atas viewport
+    document.addEventListener("mouseout", function(e) {
       if (!e.relatedTarget && e.clientY < 10) {
         showPopup();
       }
     });
 
-    // Close popup saat klik close button
     closeButton.addEventListener("click", hidePopup);
-
-    // Close popup saat klik "Lanjut Baca"
     continueButton.addEventListener("click", hidePopup);
 
-    // Close popup saat klik di luar card
-    popup.addEventListener("click", (e) => {
-      if (e.target === popup) {
-        hidePopup();
-      }
+    popup.addEventListener("click", function(e) {
+      if (e.target === popup) hidePopup();
     });
 
-    // Close popup saat tekan ESC
-    document.addEventListener("keydown", (e) => {
+    document.addEventListener("keydown", function(e) {
       if (e.key === "Escape" && !popup.classList.contains("hidden")) {
         hidePopup();
       }
     });
-  });
+  })();
 </script>
 
 <style>
