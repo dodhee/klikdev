@@ -69,4 +69,3 @@ declare global {
     dataLayer?: any[];
   }
 }
-</content>
