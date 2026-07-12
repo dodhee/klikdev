@@ -29,16 +29,22 @@ export function initBailoutTracking() {
       const medium = target.dataset.utmMedium || "unknown";
       const campaign = target.dataset.utmCampaign || "unknown";
 
-      // Kirim event ke GA4
-      if (typeof window !== "undefined" && window.gtag) {
-        window.gtag("event", "click_bailout", {
+      // Kirim event ke GA4 via gtag atau dataLayer
+      if (typeof window !== "undefined") {
+        const eventData = {
           event_category: "bailout",
           event_label: `${medium}_${campaign}`,
           utm_medium: medium,
           utm_campaign: campaign,
           outbound_url: "godev.biz.id",
           value: 1,
-        });
+        };
+
+        if (window.gtag) {
+          window.gtag("event", "click_bailout", eventData);
+        } else if (window.dataLayer) {
+          window.dataLayer.push(["event", "click_bailout", eventData]);
+        }
 
         // Debug log (hapus di production)
         console.log("[KlikDev] Bailout click tracked:", {
@@ -46,8 +52,6 @@ export function initBailoutTracking() {
           campaign,
           url: target.getAttribute("href"),
         });
-      } else {
-        console.warn("[KlikDev] gtag not available, click not tracked");
       }
     });
   });
