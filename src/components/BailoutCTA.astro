@@ -53,3 +53,22 @@ const finalUrl = generateGodevHargaUrl("bailout", slug);
     </a>
   )
 }
+
+<script is:inline>
+  (function() {
+    var bailoutLinks = document.querySelectorAll('[data-utm-medium="bailout"]');
+    bailoutLinks.forEach(function(link) {
+      if (link.dataset.trackingAttached === "true") return;
+      link.dataset.trackingAttached = "true";
+      link.addEventListener("click", function(e) {
+        var t = e.currentTarget;
+        var md = t.dataset.utmMedium || "bailout";
+        var cp = t.dataset.utmCampaign || "unknown";
+        var ev = { event_category: "bailout", event_label: md + "_" + cp, utm_medium: md, utm_campaign: cp, outbound_url: "godev.biz.id", value: 1 };
+        if (window.gtag) { window.gtag("event", "click_bailout", ev); }
+        else if (window.dataLayer) { window.dataLayer.push(["event", "click_bailout", ev]); }
+        console.log("[KlikDev] BailoutCTA tracked:", { medium: md, campaign: cp, url: t.getAttribute("href") });
+      });
+    });
+  })();
+</script>
