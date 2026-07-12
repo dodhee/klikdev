@@ -57,9 +57,12 @@ export function initBailoutTracking() {
   });
 }
 
-// Auto-init saat DOM ready
+// Auto-init saat DOM ready dengan delay untuk GA4 load
 document.addEventListener("DOMContentLoaded", () => {
-  initBailoutTracking();
+  // Delay 100ms untuk pastikan GA4 script sudah execute
+  setTimeout(() => {
+    initBailoutTracking();
+  }, 100);
 });
 
 // Re-init setelah Astro page swap (View Transitions)
