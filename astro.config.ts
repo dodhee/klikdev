@@ -23,30 +23,39 @@ export default defineConfig({
   integrations: [
     mdx(),
     sitemap({
-      filter: (page) => 
-        (config.features?.showArchives !== false || !page.endsWith("/archives/")) &&
-        !page.includes("/tags/"),
+      filter: (page) => {
+        // Exclude tags
+        if (page.includes("/tags/")) return false;
+        // Exclude archives jika showArchives false
+        if (!config.features?.showArchives && page.endsWith("/archives/")) return false;
+        // Exclude pagination posts (misal: /posts/2/, /posts/3/)
+        if (page.match(/\/posts\/\d+\/?$/)) return false;
+        return true;
+      },
       serialize: (item) => {
-        // Homepage priority tertinggi
-        if (item.url.endsWith("/")) {
+        item.lastmod = new Date().toISOString();
+
+        // Homepage: hanya https://klikdev.my.id/
+        if (item.url === config.site.url || item.url === config.site.url + "/") {
           item.priority = 1.0;
         }
-        // Halaman katalog
+        // Katalog
         else if (item.url.includes("/katalog")) {
           item.priority = 0.9;
         }
-        // Halaman produk (revenue pages)
-        else if (item.url.includes("/produk/")) {
+        // Produk
+        else if (item.url.includes("/produk")) {
           item.priority = 0.9;
         }
-        // Blog posts (content pages)
-        else if (item.url.includes("/posts/")) {
+        // Posts
+        else if (item.url.includes("/posts")) {
           item.priority = 0.6;
         }
-        // Halaman lain (about, search, dll)
+        // Lainnya
         else {
           item.priority = 0.5;
         }
+
         return item;
       },
     }),
