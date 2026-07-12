@@ -106,3 +106,38 @@ export function isValidUTMMedium(medium: string): boolean {
 
   return validMediums.includes(medium);
 }
+
+/**
+ * Track outbound click ke godev (untuk Google Analytics 4)
+ * Fungsi ini mengirim event ke GA4 setiap kali user klik tombol bailout
+ * 
+ * @param medium - UTM medium (contoh: 'bailout', 'calculator', 'exit_popup')
+ * @param campaign - UTM campaign (slug produk atau 'homepage')
+ * 
+ * @example
+ * // Di komponen Astro, panggil via onclick
+ * <a href={godevUrl} onclick={`trackGodevClick('bailout', '${slug}')`}>
+ *   Tombol Bailout
+ * </a>
+ */
+export function trackGodevClick(medium: string, campaign: string): void {
+  if (typeof window !== 'undefined' && (window as any).gtag) {
+    (window as any).gtag('event', 'click_bailout', {
+      event_category: 'engagement',
+      event_label: `${medium}_${campaign}`,
+      utm_medium: medium,
+      utm_campaign: campaign,
+      outbound_url: 'godev.biz.id',
+    });
+  }
+}
+
+/**
+ * Declare gtag globally untuk TypeScript
+ */
+declare global {
+  interface Window {
+    gtag?: (...args: any[]) => void;
+    dataLayer?: any[];
+  }
+}

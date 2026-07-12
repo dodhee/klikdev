@@ -37,6 +37,9 @@ const rssHref = getRelativeLocaleUrl(
   Astro.currentLocale ?? config.site.lang,
   "rss.xml"
 );
+
+// Google Analytics Measurement ID (ganti dengan ID Anda dari langkah A.7)
+const GA_MEASUREMENT_ID = import.meta.env.PUBLIC_GA_MEASUREMENT_ID || "G-XXXXXXXXXX";
 ---
 
 <!doctype html>
@@ -52,6 +55,22 @@ const rssHref = getRelativeLocaleUrl(
     <link rel="apple-touch-icon" href={getAssetPath("logo_klikdev_500x500px.png")} />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
+
+    <!-- Google Analytics 4 (GA4) -->
+    {GA_MEASUREMENT_ID && GA_MEASUREMENT_ID !== "G-XXXXXXXXXX" && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+        <script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', GA_MEASUREMENT_ID, {
+            send_page_view: true,
+            anonymize_ip: true, // GDPR compliance
+          });
+        </script>
+      </>
+    )}
 
     <!-- Font -->
     <Font
@@ -145,6 +164,9 @@ const rssHref = getRelativeLocaleUrl(
     
     <script>
       import "@/scripts/theme";
+      import "@/scripts/tracking"; // Initialize bailout tracking
     </script>
+    
+
   </body>
 </html>

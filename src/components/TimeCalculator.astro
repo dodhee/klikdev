@@ -77,6 +77,9 @@ const godevUrl = hasValidData ? generateGodevHargaUrl("calculator", slug) : "";
           href={godevUrl}
           target="_blank"
           rel="noopener noreferrer"
+          data-track-bailout="true"
+          data-utm-medium="calculator"
+          data-utm-campaign={slug}
           class="inline-flex items-center gap-2 px-4 py-2 bg-mbah-accent hover:bg-mbah-accent-hover text-white rounded-md text-sm font-medium transition-colors duration-200"
           aria-label="Ke layanan Done-For-You di godev"
         >
