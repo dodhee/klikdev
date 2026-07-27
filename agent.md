@@ -203,7 +203,7 @@ generateGodevHargaUrl("calculator", slug);
 | Medium | Komponen |
 |---|---|
 | `bailout` | BailoutCTA |
-| `sticky_banner` | StickyBanner (hanya beranda `index`, **bukan** `/katalog`) |
+| `sticky_banner` | StickyBanner (hanya beranda katalog `/katalog`, **bukan** home `index`) |
 | `calculator` | TimeCalculator |
 | `exit_popup` | ExitIntentPopup |
 
@@ -261,12 +261,12 @@ Jangan hardcode map per-slug.
 - [x] About page copy KlikDev
 - [x] Blog demo AstroPaper dihapus; sisa 1 post klikdev
 - [x] `npm run build` lokal sukses (16 page)
-- [x] Sticky banner di **beranda** (`index.astro`) saja — **bukan** di `/katalog`; close persist localStorage
+- [x] Sticky banner di **beranda katalog** (`katalog.astro` / `/katalog`) saja — **bukan** di home `index`; close persist localStorage
 - [x] Exit-intent: desktop only, 1x/session
 - [x] Semua bailout: `utm_source=klikdev`, medium valid, campaign = slug/`homepage`
 - [x] Tidak ada `.env` / kredensial di git
 
 ---
 
-*Update: checklist §6 sinkron fakta live (sticky = beranda, bukan katalog). Tech debt 1–4 + purge + about KlikDev + build hijau (Juli 2026).*
+*Update: sticky banner pindah ke beranda katalog (`/katalog`) saja, bukan home. Tech debt 1–4 + purge + about KlikDev + build hijau (Juli 2026).*
 *Engineered by Dody (mbah)*

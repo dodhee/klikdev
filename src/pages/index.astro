@@ -9,7 +9,6 @@ import Socials from "@/components/Socials.astro";
 import ProductCard from "@/components/ProductCard.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import TestimonialCarousel from "@/components/TestimonialCarousel.astro";
-import StickyBanner from "@/components/StickyBanner.astro";
 import { useTranslations } from "@/i18n";
 import { getAllVerifiedTestimonials } from "@/data/testimonials";
 import config from "@/config";
@@ -33,7 +32,6 @@ const homePath = getRelativeLocaleUrl(locale, "");
 
 <Layout>
   <Header />
-  <StickyBanner />
   <main
     id="main-content"
     data-layout="index"
