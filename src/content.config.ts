@@ -46,7 +46,7 @@ const produk = defineCollection({
       linkDfy: z.string().url(),
       stack: z.array(z.string()),
       waktuDeploy: z.string(),
-      kategori: z.enum(["Google Apps Script", "AI Prompt", "Automation"]),
+      kategori: z.enum(["Google Apps Script", "AI Prompt", "Automation", "Web Development"]),
       thumbnail: image(),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
@@ -54,6 +54,9 @@ const produk = defineCollection({
       modDatetime: z.date().optional().nullable(),
       ogImage: image().or(z.string()).optional(),
       canonicalURL: z.string().optional(),
+      // Fields untuk TimeCalculator component (FASE R3)
+      estimasiSetup: z.string().min(3).max(50),
+      skillDibutuhkan: z.array(z.string()).min(1).max(5),
     }),
 });
 

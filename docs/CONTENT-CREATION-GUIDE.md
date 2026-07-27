@@ -190,7 +190,7 @@ Untuk screenshot di dalam konten:
 
 **Solusi:**
 1. Cek frontmatter `draft: false`
-2. Cek kategori: harus salah satu dari "Google Apps Script", "AI Prompt", "Automation"
+2. Cek kategori: harus salah satu dari "Google Apps Script", "AI Prompt", "Automation", "Web Development"
 3. Restart dev server: `Ctrl+C` lalu `npm run dev` lagi
 
 ### Problem: Markdown syntax tidak jalan

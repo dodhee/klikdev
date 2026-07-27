@@ -84,6 +84,19 @@ collections:
         media_folder: "/src/images/produk"
         public_folder: "/src/images/produk"
       
+      # Fields untuk TimeCalculator component (FASE R3)
+      - label: "Estimasi Setup"
+        name: "estimasiSetup"
+        widget: "string"
+        hint: "Contoh: \"2-4 jam\" atau \"30 menit\""
+        pattern: [".{3,50}", "Estimasi Setup harus 3-50 karakter"]
+      
+      - label: "Skill yang Dibutuhkan"
+        name: "skillDibutuhkan"
+        widget: "list"
+        hint: "Skill teknis (maks 5 item)"
+        max: 5
+      
       # Meta fields
       - label: "Featured"
         name: "featured"
@@ -166,3 +179,4 @@ collections:
       - label: "Konten"
         name: "body"
         widget: "markdown"
+

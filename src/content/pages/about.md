@@ -1,37 +1,42 @@
 ---
-title: "About"
-description: "A bit about me and this blog."
+title: "Tentang KlikDev"
+description: "Siapa di balik KlikDev, kenapa situs ini ada, dan kapan lebih masuk akal minta dikerjakan orang lain."
 ---
 
-AstroPaper is a minimal, accessible and SEO-friendly blog theme built with [Astro](https://astro.build/) and [Tailwind CSS](https://tailwindcss.com/).
+Halo. Saya Dody — biasanya dipanggil **mbah**.
 
-![Astro Paper](@/assets/images/astropaper-og.jpg)
+Saya bikin otomasi Google Workspace, nulis prompt AI yang beneran kepakai di kerjaan, dan sesekali ngerapikan alur yang tadinya dikerjakan manual tiap minggu. Dari situ lahir **KlikDev**: tempat kumpulan script dan aset digital yang bisa kamu pasang sendiri.
 
-AstroPaper provides a solid foundation for blogs, or even portfolios\_ with full markdown support, built-in dark mode, and a clean layout that works out-of-the-box.
+## Buat siapa
 
-The blog posts in this theme also serve as guides, docs or example articles\_ making AstroPaper a flexible starting point for your next content-driven site.
+Kalau kamu tipikal orang yang bilang _“bisa sih, asal ada contoh yang udah jalan”_ — ya, ini untuk kamu.
 
-## Features
+Di sini isinya produk **DIY**: unduh, ikuti panduan, deploy. Tidak ada janji “klik sekali beres selamanya”. Ada estimasi waktu setup dan skill yang dibutuhkan di setiap halaman produk, biar kamu nggak kaget di tengah jalan.
 
-AstroPaper comes with a set of useful features that make content publishing easy and effective:
+## KlikDev vs GoDev
 
-- SEO-friendly
-- Fast performance
-- Light & dark mode
-- Highly customizable
-- Organizable blog posts
-- Responsive & accessible
-- Static search with [PageFind](https://pagefind.app/)
-- Automatic social image generation
+Dua brand, satu orang.
 
-and so much more.
+- **KlikDev** ([klikdev.my.id](https://klikdev.my.id)) — kamu kerjakan sendiri. Harga lebih ringan, kontrol di tangan kamu.
+- **GoDev** ([godev.biz.id](https://godev.biz.id)) — saya yang kerjakan. Cocok kalau deadline mepet, tim kecil, atau memang nggak mau pegang Apps Script / OAuth / trigger.
 
-## Show your support
+Banyak yang mulai di KlikDev dulu. Pas nyangkut di OAuth, multi-sheet, atau notifikasi WhatsApp, baru pindah ke GoDev. Itu normal — bukan gagal.
 
-If you like [AstroPaper](https://github.com/satnaing/astro-paper), consider giving it a star ⭐️.
+## Yang biasanya dijual di sini
 
-Found a bug 🐛 or have an improvement ✨ in mind? Feel free to open an [issue](https://github.com/satnaing/astro-paper/issues), submit a [pull request](https://github.com/satnaing/astro-paper/pulls) or start a [discussion](https://github.com/satnaing/astro-paper/discussions).
+- Otomasi Google Sheets / Apps Script
+- Library prompt Gemini buat kerjaan sehari-hari
+- Sistem automation kecil yang tadinya manual
+- Aset web development yang bisa di-remix
 
-If you find this theme helpful, you can also [sponsor me on GitHub](https://github.com/sponsors/satnaing) or [buy me a coffee](https://buymeacoffee.com/satnaing) to show your support — every penny counts.
+Katalog berubah. Yang paling update selalu di [halaman utama](/).
 
-Kyay zuu! 🙏🏼
+## Cara hubungi
+
+Butuh tanya sebelum beli? Lewat WhatsApp di tombol produk, atau lewat kanal sosial KlikDev (Instagram, Facebook, LinkedIn, Lynk).
+
+Kalau isinya “tolong dikerjakan sampai jalan di akun saya” — langsung ke [godev.biz.id](https://godev.biz.id). Nggak usah putar-putar.
+
+---
+
+*Engineered by Dody (mbah)*
