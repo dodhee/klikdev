@@ -15,6 +15,7 @@ import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
 import config from "@/config";
+import { getAssetPath } from "@/utils/withBase";
 
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
@@ -92,6 +93,14 @@ if (!ogImageUrl && config.features.dynamicOgImage) {
 const ogImage = ogImageUrl
   ? new URL(ogImageUrl, Astro.url.origin).href
   : undefined;
+
+// Hero image: hanya tampil jika ogImage diisi eksplisit di frontmatter
+const heroImageSrc =
+  typeof initOgImage === "string"
+    ? initOgImage.startsWith("http")
+      ? initOgImage
+      : getAssetPath(initOgImage)
+    : (initOgImage?.src ?? undefined);
 ---
 
 <PostLayout
@@ -131,6 +140,20 @@ const ogImage = ogImageUrl
       </span>
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
+
+    {
+      heroImageSrc && (
+        <figure class="mt-6">
+          <img
+            src={heroImageSrc}
+            alt={title}
+            class="h-auto w-full rounded-xl border border-muted object-cover"
+            loading="eager"
+            fetchpriority="high"
+          />
+        </figure>
+      )
+    }
 
     <article
       id="article"
