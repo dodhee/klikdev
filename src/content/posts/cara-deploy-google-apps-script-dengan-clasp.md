@@ -4,6 +4,7 @@ description: "Panduan step-by-step deploy Google Apps Script menggunakan Clasp C
 pubDatetime: 2026-07-01T00:00:00Z
 author: "dody [mbah]"
 tags: ["Google Apps Script", "Clasp", "Tutorial", "Automation"]
+ogImage: "/images/blog/cara-deploy-google-apps-script-dengan-clasp.jpg"
 featured: true
 draft: false
 ---
